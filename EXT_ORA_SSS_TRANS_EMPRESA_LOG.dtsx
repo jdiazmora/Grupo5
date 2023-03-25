@@ -1,0 +1,1465 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="2/8/2016 10:06:00 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="SDS0100DB09"
+  DTS:CreatorName="PACIFICO\pmoreno"
+  DTS:DTSID="{B9D1524F-C1ED-48ED-B2AA-8DB22EE59C09}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.157"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="EXT_ORA_SSS_TRANS_EMPRESA_LOG"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="216"
+  DTS:VersionGUID="{88BD7253-5C45-4BEB-B861-7E0B6A58F130}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[SENTINEL_DESA senti_pkg]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{E1A56319-DD3E-4751-9735-A54F6D2D9E68}"
+      DTS:ObjectName="SENTINEL_DESA senti_pkg">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=SENTINEL_DESA;User ID=senti_pkg;Provider=OraOLEDB.Oracle.1;Persist Security Info=True;">
+          <EncryptedData
+            Type="http://www.w3.org/2001/04/xmlenc#Element"
+            Salt="JKK+jGyBScg="
+            IV="kIcYhUTQZmt9FblI1zb4RA==" xmlns="http://www.w3.org/2001/04/xmlenc#">
+            <EncryptionMethod
+              Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc" />
+            <CipherData>
+              <CipherValue>kIcYhUTQZmt9FblI1zb4RHMv4zoRiQHZ452ejrDDQ1DUbVZ8W8mRtZcNrHPGrZRZVpab3rRLijhLgeyrfTpG2lfzOUP6BPlhd8uLi7mtsH0SJVa9f0w2n7cQOg0KajRDlBBi4Dd283gsnzkx+fo+H3bOFYn73hOsSDgw70dBhFCIci6uG7zqbBx2OkGCGteA</CipherValue>
+            </CipherData>
+          </EncryptedData>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Sentinel_Multitrama SentinelConsole]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{BC7F1019-85B0-4364-81CA-BBDF810058CC}"
+      DTS:ObjectName="Sentinel_Multitrama SentinelConsole">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=sds0100db72;Initial Catalog=Sentinel_Multitrama;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{ACF2AB5F-5426-419F-814C-89883AE910C9}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(&quot;UPDATE SNT_TATMTRANSACCIONES&#xA;&#xA;SET BND_SNT = 'C' WHERE id_transaccion  BETWEEN  &quot;)+ (DT_WSTR, 20) @[User::Valor_Parametro] &#xA;  +(&quot; AND &quot;)  +   (DT_WSTR, 20) @[User::MAX_Id_ORA]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Actualiza_BND_SNT">
+      <DTS:VariableValue
+        DTS:DataType="8">UPDATE SNT_TATMTRANSACCIONES
+
+SET BND_SNT = 'C' WHERE id_transaccion  BETWEEN  0 AND 0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{52E18A29-FA0F-4FD6-B037-6111886F0739}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(&quot;UPDATE [Sentinel_Multitrama].[dbo].[SDM_Control_Trans_Prevention]&#xA; SET Id_Control=&quot;) + (DT_WSTR, 20) @[User::MAX_Id_ORA]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Actualiza_Valor_Parametro">
+      <DTS:VariableValue
+        DTS:DataType="8">UPDATE [Sentinel_Multitrama].[dbo].[SDM_Control_Trans_Prevention]
+ SET Id_Control=0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{860980A7-C3F7-4C94-8E71-E2362F062125}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(&quot;SELECT TO_CHAR(NUMEROTARJETA) , &#xA;&#xA;Monto_Local, &#xA;&#xA;CONCAT('TDE',CONCAT('-',SUBSTR(TO_CHAR(CTRANSACCIONATM),0,6))), &#xA;&#xA;TO_CHAR(DETALLEDISPOSITIVO),&#xA;&#xA;VALORDISPENSADO, FMOVIMIENTO, CASE TO_CHAR(TIPOMOVIMIENTO) WHEN 'N' THEN 'NAC' WHEN 'I' THEN 'INT' END,TO_CHAR(&#xA;&#xA;No_Autorizacion),&#xA;&#xA;CONCAT('TDE',CONCAT('-',SUBSTR(TO_CHAR(CODIGORESPUESTAFIT),0,6))), &#xA;Saldocuenta, TO_CHAR(&#xA;&#xA;TIPODISPOSITIVO)&#xA;&#xA;,CONCAT('TDE-', CMODOENTRADA),&#xA;&#xA;&#xA;&#xA;&#xA;CCATEGORIA_ESTABLECIMIENTO&#xA;, TO_CHAR(&#xA;CODIGOINSTITUCION),&#xA; &#xA;TO_CHAR(CODIGO_MONEDA), &#xA;SUBSTR(TO_CHAR(NUMEROTARJETA) ,0,6), &#xA;&#xA;TO_CHAR(CPAIS_ISO),&#xA;&#xA;CASE  TO_CHAR(ESTATUSREVERSO) WHEN '0' THEN 'NOR' WHEN '1' THEN 'REV' ELSE 'NULO' END || '/' || CASE MOTIVOREVERSO WHEN 'D' THEN 'DISP' WHEN 'A' THEN 'APP' WHEN 'T' THEN 'T.OUT'  ELSE '   ' END, SUBSTR(TO_CHAR(IDDISPOSITIVO),0,10),TO_CHAR(&#xA;'EMI-TD'),TO_CHAR(&#xA;&#xA;'BDP'), &#xA;&#xA;&#xA;&#xA;SYSDATE, &#xA;&#xA;&#xA;TO_CHAR(CCANAL_ORIGEN)||'/'||TO_CHAR(CCANAL_DESTINO)||'/'||TO_CHAR(CDISPOSITIVO), &#xA;&#xA;CASE TO_CHAR(STATUSTRANSACCION) WHEN 'N' THEN 'NORMAL' WHEN 'C' THEN 'CANCELADA' WHEN 'D' THEN 'DUDOSA' WHEN 'P' THEN 'REV. PARCIAL' WHEN 'T' THEN 'REV.TOTAL' ELSE 'NULO'  END, NOMBREEMBOSSING, CUENTADEBITADA, &#xA;&#xA;CUPODETARJETA, MONTOREVERSO, SALDODETARJETA,Fecha_Carga,FDEBITOREVERSO &#xA;&#xA;&#xA; &#xA;FROM SNT_TATMTRANSACCIONES UNCOMMITTED&#xA;&#xA;&#xA;WHERE Id_Transaccion &gt; &quot;)+(DT_WSTR, 20)@[User::Valor_Parametro]+(&quot; AND &quot;)+ (&quot; Id_Transaccion &lt;= &quot;) + (DT_WSTR, 20)@[User::MAX_Id_ORA]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Consulta">
+      <DTS:VariableValue
+        DTS:DataType="8">SELECT TO_CHAR(NUMEROTARJETA) , 
+
+Monto_Local, 
+
+CONCAT('TDE',CONCAT('-',SUBSTR(TO_CHAR(CTRANSACCIONATM),0,6))), 
+
+TO_CHAR(DETALLEDISPOSITIVO),
+
+VALORDISPENSADO, FMOVIMIENTO, CASE TO_CHAR(TIPOMOVIMIENTO) WHEN 'N' THEN 'NAC' WHEN 'I' THEN 'INT' END,TO_CHAR(
+
+No_Autorizacion),
+
+CONCAT('TDE',CONCAT('-',SUBSTR(TO_CHAR(CODIGORESPUESTAFIT),0,6))), 
+Saldocuenta, TO_CHAR(
+
+TIPODISPOSITIVO)
+
+,CONCAT('TDE-', CMODOENTRADA),
+
+
+
+
+CCATEGORIA_ESTABLECIMIENTO
+, TO_CHAR(
+CODIGOINSTITUCION),
+ 
+TO_CHAR(CODIGO_MONEDA), 
+SUBSTR(TO_CHAR(NUMEROTARJETA) ,0,6), 
+
+TO_CHAR(CPAIS_ISO),
+
+CASE  TO_CHAR(ESTATUSREVERSO) WHEN '0' THEN 'NOR' WHEN '1' THEN 'REV' ELSE 'NULO' END || '/' || CASE MOTIVOREVERSO WHEN 'D' THEN 'DISP' WHEN 'A' THEN 'APP' WHEN 'T' THEN 'T.OUT'  ELSE '   ' END, SUBSTR(TO_CHAR(IDDISPOSITIVO),0,10),TO_CHAR(
+'EMI-TD'),TO_CHAR(
+
+'BDP'), 
+
+
+
+SYSDATE, 
+
+
+TO_CHAR(CCANAL_ORIGEN)||'/'||TO_CHAR(CCANAL_DESTINO)||'/'||TO_CHAR(CDISPOSITIVO), 
+
+CASE TO_CHAR(STATUSTRANSACCION) WHEN 'N' THEN 'NORMAL' WHEN 'C' THEN 'CANCELADA' WHEN 'D' THEN 'DUDOSA' WHEN 'P' THEN 'REV. PARCIAL' WHEN 'T' THEN 'REV.TOTAL' ELSE 'NULO'  END, NOMBREEMBOSSING, CUENTADEBITADA, 
+
+CUPODETARJETA, MONTOREVERSO, SALDODETARJETA,Fecha_Carga,FDEBITOREVERSO 
+
+
+ 
+FROM SNT_TATMTRANSACCIONES UNCOMMITTED
+
+
+WHERE Id_Transaccion &gt; 0 AND  Id_Transaccion &lt;= 0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{9DA02F60-6711-453B-BC20-6D1F5A113286}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(&quot;SELECT     O.OR_ORDEN_BANCO, D .DT_ORDEN_BANCO , O.OR_ORDEN_EMPRESA, O.OR_ORDENANTE, O.OR_NEM_ORDENANTE, O.OR_PRODUCTO, O.OR_SERVICIO, O.OR_REFERENCIA, &#xA;O.OR_USR_GENERACION, O.OR_FCH_GENERACIONH, O.OR_FCH_TRANSMISIONH, O.OR_FCH_INICIO_PAGCOB, O.OR_FCH_VCTO, O.OR_FCH_REPROCESO, O.OR_PAIS_CTA, O.OR_TIPO_CTA, &#xA;O.OR_NUMERO_CTA, O.OR_BD_ACTIVO, O.OR_LOCALIDAD_ORIGEN, O.OR_DIR_IP, O.OR_USR_TRANSMISION, O.OR_NOM_ARCHIVO_TRANSMISION, O.OR_LOTE_ARCHIVO_TRANSMISION, &#xA;O.OR_CANT_ORDENES_SOLICITADAS, O.OR_VALOR_TOTAL_ORDENADO, O.OR_VALOR_TOTAL_APROBADO, O.OR_EST_APROBACION, O.OR_EST_TRANSMISION, D .DT_SECUENCIAL, D .DT_NUC_ORDENANTE, &#xA;D .DT_ORDENANTE, D .DT_REFERENCIA_GRUPO, D .DT_COD_TERCERO_EMPRESA, D .DT_NEM_ORDENANTE, D .DT_CONCEPTO, D .DT_MONEDA_ORDEN, D .DT_VALOR_ORDENADO, &#xA;D .DT_MONEDA_APROBACION, D .DT_VALOR_APROBADO, D .DT_SALDO, D .DT_COD_BANCO_CTA, D .DT_TIPO_CTA, D .DT_NUMERO_CUENTA, D .DT_PRODUCTO, D .DT_SERVICIO, &#xA;D .DT_TIPO_NUC_BENEFICIARIO, D .DT_NUC_BENEFICIARIO, D .DT_NOMBRE_BENEFICIARIO, D .DT_OFICINA_PAGCOB, D .DT_LOCALIDAD_PAGCOB, D .DT_FCH_VENCIMIENTO, D .DT_BD_SWIFT, &#xA;D .DT_FCH_PAGCOB, D .DT_FCH_ULTIMO_PROCESO, D .DT_EST_DETALLE, D .DT_COD_ERROR, D .DT_EST_TRANSMISION, A.AU_COD_EMPRESA, A.AU_COD_PRODUCTO, A.AU_COD_SERVICIO, &#xA;A.AU_SP_EJECUCION, A.AU_DESCRIPCION_ERROR, A.AU_FECHOR_REGISTRO, A.AU_COD_MODULO, A.AU_COD_TRANSACCION, A.AU_ESTACION, P.AP_COD_PRODUCTO, P.AP_NOM_PRODUCTO, &#xA;S.SE_COD_SERVICIO, S.SE_NOM_SERVICIO, L.LO_FCH_INGRESO, L.LO_FCH_SALIDA, L.LO_APLICACION, RU.RU_COD_USUARIO, RU.RU_USUARIO_INGRESO, E.EM_NOM_EMPRESA, U.US_ID_USUARIO, &#xA;ORD.OR_NUMERO_CTA AS NUMERO_CTA_SNT&#xA;FROM            SNT_BZP_CRG_ORDEN O &#xA;INNER JOIN SNT_BZP_CRG_DETALLE D ON O.OR_ORDEN_BANCO = D .DT_ORDEN_BANCO&#xA;LEFT JOIN SNT_BZA_AUDITORIA A ON O.OR_ORDEN_EMPRESA = A.AU_COD_EMPRESA &#xA;LEFT JOIN SNT_BZA_PRODUCTO P ON O.OR_PRODUCTO = P.AP_COD_PRODUCTO &#xA;LEFT JOIN SNT_BZA_SERVICIO S ON O.OR_SERVICIO = S.SE_COD_SERVICIO AND O.OR_PRODUCTO = S.SE_COD_PRODUCTO &#xA;LEFT JOIN SNT_BZA_LOGIN L ON O.OR_ORDEN_EMPRESA = L.LO_COD_EMPRESA &#xA;LEFT JOIN SNT_BZA_USUARIO U ON O.OR_ORDEN_EMPRESA = U.US_COD_EMPRESA &#xA;LEFT JOIN SNT_BZA_ROL_USUARIO RU ON O.OR_ORDEN_EMPRESA = RU.RU_COD_EMPRESA AND RU.RU_COD_USUARIO = U.US_COD_USUARIO &#xA;LEFT JOIN SNT_BZA_EMPRESA E ON O.OR_ORDEN_EMPRESA = E.EM_COD_EMPRESA &#xA;LEFT JOIN SNT_BZP_CRG_ORDEN ORD ON O.OR_ORDEN_EMPRESA = ORD.OR_ORDEN_EMPRESA&#xA;WHERE ROWNUM=1000&#xA;ORDER BY O.OR_ORDEN_BANCO ASC&quot;)"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ConsultaOracleEmpresa">
+      <DTS:VariableValue
+        DTS:DataType="8">SELECT     O.OR_ORDEN_BANCO, D .DT_ORDEN_BANCO , O.OR_ORDEN_EMPRESA, O.OR_ORDENANTE, O.OR_NEM_ORDENANTE, O.OR_PRODUCTO, O.OR_SERVICIO, O.OR_REFERENCIA, 
+O.OR_USR_GENERACION, O.OR_FCH_GENERACIONH, O.OR_FCH_TRANSMISIONH, O.OR_FCH_INICIO_PAGCOB, O.OR_FCH_VCTO, O.OR_FCH_REPROCESO, O.OR_PAIS_CTA, O.OR_TIPO_CTA, 
+O.OR_NUMERO_CTA, O.OR_BD_ACTIVO, O.OR_LOCALIDAD_ORIGEN, O.OR_DIR_IP, O.OR_USR_TRANSMISION, O.OR_NOM_ARCHIVO_TRANSMISION, O.OR_LOTE_ARCHIVO_TRANSMISION, 
+O.OR_CANT_ORDENES_SOLICITADAS, O.OR_VALOR_TOTAL_ORDENADO, O.OR_VALOR_TOTAL_APROBADO, O.OR_EST_APROBACION, O.OR_EST_TRANSMISION, D .DT_SECUENCIAL, D .DT_NUC_ORDENANTE, 
+D .DT_ORDENANTE, D .DT_REFERENCIA_GRUPO, D .DT_COD_TERCERO_EMPRESA, D .DT_NEM_ORDENANTE, D .DT_CONCEPTO, D .DT_MONEDA_ORDEN, D .DT_VALOR_ORDENADO, 
+D .DT_MONEDA_APROBACION, D .DT_VALOR_APROBADO, D .DT_SALDO, D .DT_COD_BANCO_CTA, D .DT_TIPO_CTA, D .DT_NUMERO_CUENTA, D .DT_PRODUCTO, D .DT_SERVICIO, 
+D .DT_TIPO_NUC_BENEFICIARIO, D .DT_NUC_BENEFICIARIO, D .DT_NOMBRE_BENEFICIARIO, D .DT_OFICINA_PAGCOB, D .DT_LOCALIDAD_PAGCOB, D .DT_FCH_VENCIMIENTO, D .DT_BD_SWIFT, 
+D .DT_FCH_PAGCOB, D .DT_FCH_ULTIMO_PROCESO, D .DT_EST_DETALLE, D .DT_COD_ERROR, D .DT_EST_TRANSMISION, A.AU_COD_EMPRESA, A.AU_COD_PRODUCTO, A.AU_COD_SERVICIO, 
+A.AU_SP_EJECUCION, A.AU_DESCRIPCION_ERROR, A.AU_FECHOR_REGISTRO, A.AU_COD_MODULO, A.AU_COD_TRANSACCION, A.AU_ESTACION, P.AP_COD_PRODUCTO, P.AP_NOM_PRODUCTO, 
+S.SE_COD_SERVICIO, S.SE_NOM_SERVICIO, L.LO_FCH_INGRESO, L.LO_FCH_SALIDA, L.LO_APLICACION, RU.RU_COD_USUARIO, RU.RU_USUARIO_INGRESO, E.EM_NOM_EMPRESA, U.US_ID_USUARIO, 
+ORD.OR_NUMERO_CTA AS NUMERO_CTA_SNT
+FROM            SNT_BZP_CRG_ORDEN O 
+INNER JOIN SNT_BZP_CRG_DETALLE D ON O.OR_ORDEN_BANCO = D .DT_ORDEN_BANCO
+LEFT JOIN SNT_BZA_AUDITORIA A ON O.OR_ORDEN_EMPRESA = A.AU_COD_EMPRESA 
+LEFT JOIN SNT_BZA_PRODUCTO P ON O.OR_PRODUCTO = P.AP_COD_PRODUCTO 
+LEFT JOIN SNT_BZA_SERVICIO S ON O.OR_SERVICIO = S.SE_COD_SERVICIO AND O.OR_PRODUCTO = S.SE_COD_PRODUCTO 
+LEFT JOIN SNT_BZA_LOGIN L ON O.OR_ORDEN_EMPRESA = L.LO_COD_EMPRESA 
+LEFT JOIN SNT_BZA_USUARIO U ON O.OR_ORDEN_EMPRESA = U.US_COD_EMPRESA 
+LEFT JOIN SNT_BZA_ROL_USUARIO RU ON O.OR_ORDEN_EMPRESA = RU.RU_COD_EMPRESA AND RU.RU_COD_USUARIO = U.US_COD_USUARIO 
+LEFT JOIN SNT_BZA_EMPRESA E ON O.OR_ORDEN_EMPRESA = E.EM_COD_EMPRESA 
+LEFT JOIN SNT_BZP_CRG_ORDEN ORD ON O.OR_ORDEN_EMPRESA = ORD.OR_ORDEN_EMPRESA
+WHERE ROWNUM=1000
+ORDER BY O.OR_ORDEN_BANCO ASC</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D715F80C-0AE8-4E38-97DD-2A56A810860B}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="IDControlEmpresa">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{63B95F83-9B08-4A3B-A443-DAE673790CC9}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(&quot;SELECT MAX(ID_TRANSACCION)&#xA;FROM SNT_TATMTRANSACCIONES&#xA;WHERE BND_SNT 0 'C'&quot;)"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ID_MAX_NUEVO">
+      <DTS:VariableValue
+        DTS:DataType="8">SELECT MAX(ID_TRANSACCION)
+FROM SNT_TATMTRANSACCIONES
+WHERE BND_SNT 0 'C'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{75D4263A-76F4-483C-9714-9AF832608EDD}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="MaxIdControlEmpresa">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{63624431-F13B-49D8-BA7D-054DD57FCB6B}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="MAX_Id_ORA">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{FF3A312E-3737-41DD-9EAA-44BBCFD1F274}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(&quot;UPDATE [Sentinel_Multitrama].[dbo].[SDM_Control_Trans_Empresa_Cash]&#xA; SET Id_Control=&quot;) + (DT_WSTR, 20)  @[User::MaxIdControlEmpresa]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="OpUpdateControlEmpresa">
+      <DTS:VariableValue
+        DTS:DataType="8">UPDATE [Sentinel_Multitrama].[dbo].[SDM_Control_Trans_Empresa_Cash]
+ SET Id_Control=0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{DE6C1739-9F7E-49A2-AF9C-5C73F7F3A8E4}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="UEN">
+      <DTS:VariableValue
+        DTS:DataType="8">BCP</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F9B87FCF-322B-4622-BCD0-D78BF7AA5C4D}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="Valida_Carga">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{FD49D983-5CBE-4272-88FB-FC308F346213}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="Valor_Parametro">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:LoggingOptions
+    DTS:FilterKind="0"
+    DTS:LoggingMode="1">
+    <DTS:Property
+      DTS:DataType="8"
+      DTS:Name="EventFilter">2,7,OnError,12,OnTaskFailed</DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnError"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnTaskFailed"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+  </DTS:LoggingOptions>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Actualiza Valor Parametro"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{594D0A50-7852-41B2-865A-B3C6A48E7DFF}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Actualiza Valor Parametro"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{BC7F1019-85B0-4364-81CA-BBDF810058CC}"
+          SQLTask:SqlStatementSource="USE [Sentinel_Multitrama]&#xA;GO&#xA;DECLARE @MaxSecuencia_Login as int&#xA;DECLARE @Id_Control_Log as int&#xA;Select @MaxSecuencia_Login = MAX(Secuencia_Login) from SDM_SSS_Trans_Empresa_Login&#xA;Select @Id_Control_Log = Id_Control_Log from SDM_Control_Trans_Empresa_Cash&#xA;&#xA;&#xA;if(@MaxSecuencia_Login&gt;@Id_Control_Log)&#xA;&#x9;begin&#xA;&#x9;&#x9;update SDM_Control_Trans_Empresa_Cash&#xA;&#x9;&#x9;set Id_Control_Log = @MaxSecuencia_Login&#xA;&#x9;end&#xA;&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Actualizar campo bandera a C Login"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{16A4FA80-864B-4579-B649-8481137DC899}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Actualizar campo bandera a C Login"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{E1A56319-DD3E-4751-9735-A54F6D2D9E68}"
+          SQLTask:SqlStatementSource="Declare&#xA;  Ln_Cont_Del                 Number(8);&#xA;&#xA;  Cursor C_snt_Bza_login IS&#xA;     select rowid&#xA;     from senti_obj.snt_Bza_login &#xA;     where band_snt = 'P';&#xA;&#xA;  Begin&#xA;    Ln_Cont_Del := 0;&#xA;    For i In C_snt_Bza_login&#xA;    Loop&#xA;       Begin      &#xA;          update senti_obj.snt_Bza_login t&#xA;          set t.band_snt = 'C' where rowid = i.rowid;  &#xA;          Ln_Cont_Del := Ln_Cont_Del + 1;&#xA;       Exception   &#xA;          When others then                &#xA;          dbms_output.put_line('snt_Bza_login ' || i.rowid || ' Err ' || Substr(SQLERRM, 1, 200));               &#xA;       End;        &#xA;&#xA;       IF MOD(Ln_Cont_Del, 10000) = 0 THEN&#xA;          Commit;&#xA;       END IF;                             &#xA;&#xA;    End Loop;&#xA;    &#xA;    commit;&#xA;    dbms_output.put_line('Finaliza  Proceso snt_Bza_login ' || to_char(sysdate, 'dd-mm-yyyy hh24:mi:ss'));&#xA;&#xA;   Exception&#xA;      When NO_DATA_FOUND then&#xA;                      dbms_output.put_line('senti_obj.snt_Bza_login');&#xA;&#xA;      When others then&#xA;           dbms_output.put_line('Finaliza  mal el Proceso snt_Bza_login ' || to_char(sysdate, 'dd-mm-yyyy hh24:mi:ss'));&#xA;           dbms_output.put_line('Descripción Error ' || Substr(SQLERRM, 1, 200));&#xA;  End;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Actualizar campo bandera a P Login"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{C4EAD59E-B05A-44AD-8B70-5CAFB9478538}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Actualizar campo bandera a P Login"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{E1A56319-DD3E-4751-9735-A54F6D2D9E68}"
+          SQLTask:SqlStatementSource="Declare&#xA;  Ln_Cont_Del                 Number(8);&#xA;&#xA;  Cursor C_snt_Bza_login IS&#xA;     select rowid&#xA;     from senti_obj.snt_Bza_login &#xA;     where band_snt = 'N';&#xA;&#xA;  Begin&#xA;    Ln_Cont_Del := 0;&#xA;    For i In C_snt_Bza_login&#xA;    Loop&#xA;       Begin      &#xA;          update senti_obj.snt_Bza_login t&#xA;          set t.band_snt = 'P' where rowid = i.rowid;  &#xA;          Ln_Cont_Del := Ln_Cont_Del + 1;&#xA;       Exception   &#xA;          When others then                &#xA;          dbms_output.put_line('snt_Bza_login ' || i.rowid || ' Err ' || Substr(SQLERRM, 1, 200));               &#xA;       End;        &#xA;&#xA;       IF MOD(Ln_Cont_Del, 10000) = 0 THEN&#xA;          Commit;&#xA;       END IF;                             &#xA;&#xA;    End Loop;&#xA;    &#xA;    commit;&#xA;    dbms_output.put_line('Finaliza  Proceso snt_Bza_login ' || to_char(sysdate, 'dd-mm-yyyy hh24:mi:ss'));&#xA;&#xA;   Exception&#xA;      When NO_DATA_FOUND then&#xA;                      dbms_output.put_line('senti_obj.snt_Bza_login');&#xA;&#xA;      When others then&#xA;           dbms_output.put_line('Finaliza  mal el Proceso snt_Bza_login ' || to_char(sysdate, 'dd-mm-yyyy hh24:mi:ss'));&#xA;           dbms_output.put_line('Descripción Error ' || Substr(SQLERRM, 1, 200));&#xA;  End;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{58039A47-D5A5-418B-AA6B-2531D0B8E4EA}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="EXT_ORA_SSS_TRANS_EMPRESA_LOGIN"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Data Conversion"
+              name="Data Conversion"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Inputs[Data Conversion Input]"
+                  name="Data Conversion Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Inputs[Data Conversion Input].Columns[LO_SECUENCIA]"
+                      cachedDataType="numeric"
+                      cachedName="LO_SECUENCIA"
+                      cachedPrecision="8"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_SECUENCIA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Inputs[Data Conversion Input].Columns[LO_COD_EMPRESA]"
+                      cachedDataType="numeric"
+                      cachedName="LO_COD_EMPRESA"
+                      cachedPrecision="10"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_COD_EMPRESA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Inputs[Data Conversion Input].Columns[LO_FCH_INGRESO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="LO_FCH_INGRESO"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_FCH_INGRESO]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Inputs[Data Conversion Input].Columns[LO_FCH_SALIDA]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="LO_FCH_SALIDA"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_FCH_SALIDA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Inputs[Data Conversion Input].Columns[LO_APLICACION]"
+                      cachedDataType="wstr"
+                      cachedLength="20"
+                      cachedName="LO_APLICACION"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_APLICACION]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Inputs[Data Conversion Input].Columns[EM_NUC_EMPRESA]"
+                      cachedDataType="wstr"
+                      cachedLength="13"
+                      cachedName="EM_NUC_EMPRESA"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[EM_NUC_EMPRESA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Inputs[Data Conversion Input].Columns[LO_DIR_IP_MAQUINA]"
+                      cachedDataType="wstr"
+                      cachedLength="20"
+                      cachedName="LO_DIR_IP_MAQUINA"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_DIR_IP_MAQUINA]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output]"
+                  exclusionGroup="1"
+                  name="Data Conversion Output"
+                  synchronousInputId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_SECUENCIA]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_SECUENCIA]"
+                      name="Copy of LO_SECUENCIA"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_SECUENCIA]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_COD_EMPRESA]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_COD_EMPRESA]"
+                      name="Copy of LO_COD_EMPRESA"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_COD_EMPRESA]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_FCH_INGRESO]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_FCH_INGRESO]"
+                      name="Copy of LO_FCH_INGRESO"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_FCH_INGRESO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_FCH_SALIDA]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_FCH_SALIDA]"
+                      name="Copy of LO_FCH_SALIDA"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_FCH_SALIDA]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_APLICACION]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="20"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_APLICACION]"
+                      name="Copy of LO_APLICACION"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_APLICACION]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of EM_NUC_EMPRESA]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="IgnoreFailure"
+                      length="20"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of EM_NUC_EMPRESA]"
+                      name="Copy of EM_NUC_EMPRESA"
+                      truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[EM_NUC_EMPRESA]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_DIR_IP_MAQUINA]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="IgnoreFailure"
+                      length="35"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_DIR_IP_MAQUINA]"
+                      name="Copy of LO_DIR_IP_MAQUINA"
+                      truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_DIR_IP_MAQUINA]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Data Conversion Error Output"
+                  synchronousInputId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="EXT_ORA_FUENTE_EMPRESA_LOGIN"
+              usesDispositions="true"
+              validateExternalMetadata="False"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"SENTI_OBJ"."SNT_BZP_CRG_ORDEN"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT  g.lo_secuencia,g.lo_cod_usuario, g.lo_cod_empresa, g.lo_fch_ingreso, g.lo_fch_salida, g.lo_nom_maquina, g.lo_dir_ip_maquina, g.lo_aplicacion,
+E.EM_NUC_EMPRESA
+FROM snt_Bza_login g
+LEFT JOIN SNT_BZA_EMPRESA E ON E.EM_COD_EMPRESA= G.LO_COD_EMPRESA
+WHERE ( g.BAND_SNT = 'P')</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::Consulta</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[SENTINEL_DESA senti_pkg]"
+                  connectionManagerRefId="Package.ConnectionManagers[SENTINEL_DESA senti_pkg]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_SECUENCIA]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_SECUENCIA]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_SECUENCIA]"
+                      name="LO_SECUENCIA"
+                      precision="8"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_COD_USUARIO]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_COD_USUARIO]"
+                      length="20"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_COD_USUARIO]"
+                      name="LO_COD_USUARIO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_COD_EMPRESA]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_COD_EMPRESA]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_COD_EMPRESA]"
+                      name="LO_COD_EMPRESA"
+                      precision="10"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_FCH_INGRESO]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_FCH_INGRESO]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_FCH_INGRESO]"
+                      name="LO_FCH_INGRESO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_FCH_SALIDA]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_FCH_SALIDA]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_FCH_SALIDA]"
+                      name="LO_FCH_SALIDA"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_NOM_MAQUINA]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_NOM_MAQUINA]"
+                      length="30"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_NOM_MAQUINA]"
+                      name="LO_NOM_MAQUINA"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_DIR_IP_MAQUINA]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_DIR_IP_MAQUINA]"
+                      length="20"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_DIR_IP_MAQUINA]"
+                      name="LO_DIR_IP_MAQUINA"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_APLICACION]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_APLICACION]"
+                      length="20"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[LO_APLICACION]"
+                      name="LO_APLICACION"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[EM_NUC_EMPRESA]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[EM_NUC_EMPRESA]"
+                      length="13"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].Columns[EM_NUC_EMPRESA]"
+                      name="EM_NUC_EMPRESA"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_SECUENCIA]"
+                      dataType="numeric"
+                      name="LO_SECUENCIA"
+                      precision="8" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_COD_USUARIO]"
+                      dataType="wstr"
+                      length="20"
+                      name="LO_COD_USUARIO" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_COD_EMPRESA]"
+                      dataType="numeric"
+                      name="LO_COD_EMPRESA"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_FCH_INGRESO]"
+                      dataType="dbTimeStamp"
+                      name="LO_FCH_INGRESO" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_FCH_SALIDA]"
+                      dataType="dbTimeStamp"
+                      name="LO_FCH_SALIDA" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_NOM_MAQUINA]"
+                      dataType="wstr"
+                      length="30"
+                      name="LO_NOM_MAQUINA" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_DIR_IP_MAQUINA]"
+                      dataType="wstr"
+                      length="20"
+                      name="LO_DIR_IP_MAQUINA" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[LO_APLICACION]"
+                      dataType="wstr"
+                      length="20"
+                      name="LO_APLICACION" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output].ExternalColumns[EM_NUC_EMPRESA]"
+                      dataType="wstr"
+                      length="13"
+                      name="EM_NUC_EMPRESA" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_SECUENCIA]"
+                      dataType="numeric"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_SECUENCIA]"
+                      name="LO_SECUENCIA"
+                      precision="8" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_COD_USUARIO]"
+                      dataType="wstr"
+                      length="20"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_COD_USUARIO]"
+                      name="LO_COD_USUARIO" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_COD_EMPRESA]"
+                      dataType="numeric"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_COD_EMPRESA]"
+                      name="LO_COD_EMPRESA"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_FCH_INGRESO]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_FCH_INGRESO]"
+                      name="LO_FCH_INGRESO" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_FCH_SALIDA]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_FCH_SALIDA]"
+                      name="LO_FCH_SALIDA" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_NOM_MAQUINA]"
+                      dataType="wstr"
+                      length="30"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_NOM_MAQUINA]"
+                      name="LO_NOM_MAQUINA" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_DIR_IP_MAQUINA]"
+                      dataType="wstr"
+                      length="20"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_DIR_IP_MAQUINA]"
+                      name="LO_DIR_IP_MAQUINA" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_APLICACION]"
+                      dataType="wstr"
+                      length="20"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[LO_APLICACION]"
+                      name="LO_APLICACION" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[EM_NUC_EMPRESA]"
+                      dataType="wstr"
+                      length="13"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[EM_NUC_EMPRESA]"
+                      name="EM_NUC_EMPRESA" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[SDM_SSS_Trans_Empresa_Login]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Sentinel_Multitrama SentinelConsole]"
+                  connectionManagerRefId="Package.ConnectionManagers[Sentinel_Multitrama SentinelConsole]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="IgnoreFailure"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of LO_SECUENCIA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Copy of LO_SECUENCIA"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Secuencia_Login]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_SECUENCIA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of LO_FCH_INGRESO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="Copy of LO_FCH_INGRESO"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fch_Ingreso]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_FCH_INGRESO]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of LO_FCH_SALIDA]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="Copy of LO_FCH_SALIDA"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fch_Salida]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_FCH_SALIDA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of LO_APLICACION]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="Copy of LO_APLICACION"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Aplicacion]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_APLICACION]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of EM_NUC_EMPRESA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="Copy of EM_NUC_EMPRESA"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Numero_Cliente]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of EM_NUC_EMPRESA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of LO_COD_EMPRESA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Copy of LO_COD_EMPRESA"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Codigo_Empresa]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_COD_EMPRESA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of LO_DIR_IP_MAQUINA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="35"
+                      cachedName="Copy of LO_DIR_IP_MAQUINA"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IP]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LO_DIR_IP_MAQUINA]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Id_Transaccion]"
+                      dataType="numeric"
+                      name="Id_Transaccion"
+                      precision="18" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Id_UEN]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="Id_UEN" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fecha_Ingreso]"
+                      dataType="dbTimeStamp"
+                      name="Fecha_Ingreso" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fecha]"
+                      dataType="dbTimeStamp"
+                      name="Fecha" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Secuencia_Login]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="Secuencia_Login" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Numero_Cliente]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="Numero_Cliente" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fch_Ingreso]"
+                      dataType="dbTimeStamp"
+                      name="Fch_Ingreso" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fch_Salida]"
+                      dataType="dbTimeStamp"
+                      name="Fch_Salida" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Aplicacion]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="Aplicacion" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Archivo_Fuente]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Archivo_Fuente" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Codigo_Empresa]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="Codigo_Empresa" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IP]"
+                      codePage="1252"
+                      dataType="str"
+                      length="35"
+                      name="IP" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN.Paths[Data Conversion Output]"
+              endId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="Data Conversion Output"
+              startId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Outputs[Data Conversion Output]" />
+            <path
+              refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN.Paths[OLE DB Source Output]"
+              endId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion.Inputs[Data Conversion Input]"
+              name="OLE DB Source Output"
+              startId="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Inserta Intermedia hacia Trama Sentinel"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{18952B4B-C8DD-403A-9129-62BDC5DBB662}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Inserta Intermedia hacia Trama Sentinel"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{BC7F1019-85B0-4364-81CA-BBDF810058CC}"
+          SQLTask:SqlStatementSource="USE [Sentinel_Multitrama]&#xA;GO&#xA;&#xA;DECLARE @MaxIdControlEmpresaLogin as int&#xA;Select @MaxIdControlEmpresaLogin = Id_Control_Log from SDM_Control_Trans_Empresa_Cash&#xA;&#xA;&#xA;INSERT INTO [ST05].[SSS_Trans]([Id_UEN],[Fecha_Ingreso],[Fecha],[Numero_Cliente],[Fch_Ingreso]&#xA;           ,[Fch_Salida],[Aplicacion],[Archivo_Fuente],[Codigo_Empresa],[IP])&#xA;SELECT 'BCP',GETDATE(),[Fch_Ingreso],C.[Numero_Cliente],[Fch_Ingreso]&#xA;           ,[Fch_Salida],[Aplicacion], 'LOGI_CASH', [Codigo_Empresa],[IP]&#xA;FROM SDM_SSS_Trans_Empresa_Login L&#xA;LEFT JOIN STO.SSS_Clientes C&#xA;ON L.Numero_Cliente = C.Identificacion&#xA;WHERE Secuencia_Login &gt; @MaxIdControlEmpresaLogin&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Limpia tabla intermedia SDM_SSS_Trans_Empresa_Login"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{906F14EA-B54C-40CB-A58E-DC2BBBC7D7C7}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpia tabla intermedia SDM_SSS_Trans_Empresa_Login"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{BC7F1019-85B0-4364-81CA-BBDF810058CC}"
+          SQLTask:BypassPrepare="False"
+          SQLTask:SqlStatementSource="truncate table SDM_SSS_Trans_Empresa_Login" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{2323113F-7C8B-41E2-90FD-E1E7058C3B24}"
+      DTS:From="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Actualizar campo bandera a C Login" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{C3DCFC32-CA4F-4DA5-98B3-AE36D0CAA4F0}"
+      DTS:From="Package\Limpia tabla intermedia SDM_SSS_Trans_Empresa_Login"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{C53AF222-F18B-4051-8F71-50B21D38A04A}"
+      DTS:From="Package\Inserta Intermedia hacia Trama Sentinel"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Actualiza Valor Parametro" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{7A9C791F-54EB-44F5-B688-68CEFA86A3C4}"
+      DTS:From="Package\Actualizar campo bandera a C Login"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Inserta Intermedia hacia Trama Sentinel" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{7D5A2619-3C87-4465-9779-8A56B7F80D0D}"
+      DTS:From="Package\Actualizar campo bandera a P Login"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\Limpia tabla intermedia SDM_SSS_Trans_Empresa_Login" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta sección CDATA contiene la información de diseño del paquete. Esta sección incluye información como, por ejemplo, las coordenadas (x,y), el ancho y el alto.-->
+<!--Si edita manualmente esta sección y comete un error, puede eliminarlo. -->
+<!--El paquete podrá cargarse normalmente, pero se perderá la información de diseño anterior y el diseñador reorganizará los elementos automáticamente en la superficie de diseño.-->
+<Objects
+  Version="8">
+  <!--Cada uno de los nodos siguientes contiene propiedades que no afectan al comportamiento en tiempo de ejecución.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="200,42"
+          Id="Package\Actualiza Valor Parametro"
+          TopLeft="92.1111111111111,374.888888888889" />
+        <NodeLayout
+          Size="248,42"
+          Id="Package\Actualizar campo bandera a C Login"
+          TopLeft="68.7777777777778,229.666666666667" />
+        <NodeLayout
+          Size="206,42"
+          Id="Package\Actualizar campo bandera a P Login"
+          TopLeft="64.6666666666667,16" />
+        <NodeLayout
+          Size="273,42"
+          Id="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN"
+          TopLeft="64.1666666666667,162.166666666667" />
+        <NodeLayout
+          Size="269,42"
+          Id="Package\Inserta Intermedia hacia Trama Sentinel"
+          TopLeft="62.2222222222222,294.777777777778" />
+        <NodeLayout
+          Size="333,42"
+          Id="Package\Limpia tabla intermedia SDM_SSS_Trans_Empresa_Login"
+          TopLeft="19.6111111111111,87.944444444444" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="196.722222222222,204.166666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,25.5"
+              Start="0,0"
+              End="0,18">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="186.111111111111,129.944444444444">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="14.5555555555556,32.222222222223"
+              Start="0,0"
+              End="14.5555555555556,24.722222222223">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,12.1111111111115" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,12.1111111111115"
+                    Point2="0,16.1111111111115"
+                    Point3="4,16.1111111111115" />
+                  <mssgle:LineSegment
+                    End="10.5555555555556,16.1111111111115" />
+                  <mssgle:CubicBezierSegment
+                    Point1="10.5555555555556,16.1111111111115"
+                    Point2="14.5555555555556,16.1111111111115"
+                    Point3="14.5555555555556,20.1111111111115" />
+                  <mssgle:LineSegment
+                    End="14.5555555555556,24.722222222223" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="194.416666666667,336.777777777778">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,38.111111111111"
+              Start="0,0"
+              End="0,30.611111111111">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.611111111111" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="194.75,271.666666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,23.111111111111"
+              Start="0,0"
+              End="0,15.611111111111">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,15.611111111111" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="167.666666666667,58">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="18.4444444444444,29.944444444444"
+              Start="0,0"
+              End="18.4444444444444,22.444444444444">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,10.972222222222" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,10.972222222222"
+                    Point2="0,14.972222222222"
+                    Point3="4,14.972222222222" />
+                  <mssgle:LineSegment
+                    End="14.4444444444444,14.972222222222" />
+                  <mssgle:CubicBezierSegment
+                    Point1="14.4444444444444,14.972222222222"
+                    Point2="18.4444444444444,14.972222222222"
+                    Point3="18.4444444444444,18.972222222222" />
+                  <mssgle:LineSegment
+                    End="18.4444444444444,22.444444444444" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <AnnotationLayout
+          Text="Actualiza el valor del parametro Id_ControlLog en SDM_Control_Trans_Empresa_Cash,&#xA;tomando el max(Secuencia_Login) de la intermedia"
+          ParentId="Package"
+          FontInfo="{assembly:Null}"
+          Size="479,56"
+          Id="b651e154-58bd-4a19-b5a8-c035c1dec05d"
+          TopLeft="316.555555555556,442" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="171,42"
+          Id="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination"
+          TopLeft="424,202" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\Data Conversion"
+          TopLeft="432,112" />
+        <NodeLayout
+          Size="255,42"
+          Id="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN"
+          TopLeft="388,35" />
+        <EdgeLayout
+          Id="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN.Paths[OLE DB Source Output]"
+          TopLeft="512.75,77">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,35"
+              Start="0,0"
+              End="0,27.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,27.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN.Paths[Data Conversion Output]"
+          TopLeft="509.75,154">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,48"
+              Start="0,0"
+              End="0,40.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,40.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\EXT_ORA_SSS_TRANS_EMPRESA_LOGIN\EXT_ORA_FUENTE_EMPRESA_LOGIN">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

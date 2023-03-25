@@ -1,0 +1,2091 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/21/2006 11:32:33 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="SMART-07"
+  DTS:CreatorName="SMARTSOFTINT\rcastillo"
+  DTS:DTSID="{B52A6321-4042-4F9A-A1F1-93E2C0E03628}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.180"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="SSS_Sentinel_CR_HistoricoAC"
+  DTS:VersionBuild="53"
+  DTS:VersionGUID="{F0A5C418-3815-462E-A1D1-F142791FBE89}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Sentinel_CR]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{8159DEFB-8360-4EBE-8337-F238AC63E8CE}"
+      DTS:ObjectName="Sentinel_CR">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
+          DTS:ConnectionString="Data Source=SENTINEL\SENTINEL;Initial Catalog=Sentinel_CR;Provider=SQLOLEDB.1;Integrated Security=SSPI;Application Name=SSIS-SSS_SSSentinelComplianceAndRisk_HistoricoAC-{8159DEFB-8360-4EBE-8337-F238AC63E8CE}Sentinel_CR;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{791D6D5D-3695-46BC-B642-30286E6B7242}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="FechaCaducidad">
+      <DTS:VariableValue
+        DTS:DataType="8">2006-10</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Controla Registros Duplicados"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{A1841390-17A7-4902-9325-54311C11A7D9}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Controla Registros Duplicados"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; Microsoft SQL Server 2008 R2; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{8159DEFB-8360-4EBE-8337-F238AC63E8CE}"
+          SQLTask:BypassPrepare="False"
+          SQLTask:SqlStatementSource="SELECT A.Numero_Cliente, A.Periodo INTO #Duplicados_Acum&#xA;FROM SSS_Acumulado_Perfil A With(Nolock) INNER JOIN SSS_Acumulado_Perfil_Hist B With (nolock)&#xA;  ON A.Numero_Cliente = B.Numero_Cliente and  A.Periodo = B.Periodo&#xA;&#xA;&#xA;DELETE FROM SSS_Acumulado_Perfil&#xA;From SSS_Acumulado_Perfil A &#xA; INNER JOIN #Duplicados_Acum B With (nolock)&#xA;  ON A.Numero_Cliente = B.Numero_Cliente and  A.Periodo = B.Periodo" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DelAcumulados"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="DelAcumulados"
+      DTS:DTSID="{D10C1E33-E771-41CE-BFA3-B8CCAE06C808}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DelAcumulados"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; Microsoft SQL Server v9; © 2004 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{8159DEFB-8360-4EBE-8337-F238AC63E8CE}"
+          SQLTask:SqlStatementSource="SET DEADLOCK_PRIORITY HIGH&#xA;&#xA;DECLARE  @BLOQUE int&#xA;&#xA;SET @BLOQUE = 50000&#xA;&#xA;SET ROWCOUNT @BLOQUE&#xA;&#xA;SELECT Numero_Cliente FROM   SSS_Acumulado_Perfil&#xA;&#xA;WHILE @@ROWCOUNT &gt; 0&#xA;BEGIN&#xA;&#xA;DELETE SSS_Acumulado_Perfil&#xA;FROM         SSS_Acumulado_Perfil&#xA;WHERE     Periodo &lt;=  ?&#xA;&#xA;END&#xA;&#xA;SET ROWCOUNT 0" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="User::FechaCaducidad"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DTSTask_DTSDataPumpTask_1"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Transform Data Task: undefined"
+      DTS:DTSID="{96CE4C55-363D-4893-B291-606E1936F559}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DTSTask_DTSDataPumpTask_1"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server v9; (C) 2004 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          BLOBTempStoragePath=""
+          bufferTempStoragePath=""
+          engineThreads="5"
+          version="1">
+          <components>
+            <component
+              refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation;Microsoft SqlServer v9; (C) 2005 Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[SSS_Acumulado_Perfil_Hist]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destinaton. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">CHECK_CONSTRAINTS,ROWS_PER_BATCH = 1</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">10000</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Sentinel_CR]"
+                  connectionManagerRefId="Package.ConnectionManagers[Sentinel_CR]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Numero_Cliente]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="Numero_Cliente"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Numero_Cliente]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Numero_Cliente]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Periodo]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="7"
+                      cachedName="Periodo"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Periodo]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Periodo]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_01]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_01"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_01]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_01]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_02]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_02"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_02]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_02]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_03]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_03"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_03]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_03]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_04]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_04"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_04]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_04]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_05]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_05"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_05]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_05]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_06]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_06"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_06]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_06]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_07]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_07"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_07]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_07]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_08]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_08"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_08]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_08]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_09]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_09"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_09]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_09]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_10]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_10"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_10]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_10]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_11]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_11"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_11]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_11]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_12]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_12"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_12]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_12]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_13]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_13"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_13]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_13]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_14]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_14"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_14]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_14]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_15]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_15"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_15]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_15]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_16]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_16"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_16]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_16]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_17]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_17"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_17]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_17]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_18]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_18"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_18]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_18]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_19]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_19"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_19]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_19]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_20]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_20"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_20]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_20]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_21]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_21"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_21]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_21]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_22]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_22"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_22]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_22]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_23]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_23"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_23]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_23]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_24]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_24"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_24]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_24]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_25]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_25"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_25]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_25]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_26]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_26"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_26]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_26]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_27]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_27"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_27]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_27]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_28]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_28"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_28]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_28]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_29]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_29"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_29]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_29]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Criterio_30]"
+                      cachedDataType="r8"
+                      cachedName="Criterio_30"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_30]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_30]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Estado]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="1"
+                      cachedName="Estado"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Estado]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Estado]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Fecha_Estado]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="Fecha_Estado"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fecha_Estado]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Fecha_Estado]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Fecha_Excepcion]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="Fecha_Excepcion"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fecha_Excepcion]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Fecha_Excepcion]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Id_Aprobacion]"
+                      cachedDataType="numeric"
+                      cachedName="Id_Aprobacion"
+                      cachedPrecision="18"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Id_Aprobacion]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Id_Aprobacion]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Numero_Reincidencia]"
+                      cachedDataType="i2"
+                      cachedName="Numero_Reincidencia"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Numero_Reincidencia]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Numero_Reincidencia]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Fecha_Ult_Reincidencia]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="Fecha_Ult_Reincidencia"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fecha_Ult_Reincidencia]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Fecha_Ult_Reincidencia]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Aplicar_Extension]"
+                      cachedDataType="bool"
+                      cachedName="Aplicar_Extension"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Aplicar_Extension]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Aplicar_Extension]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[id_Estado_Oficial]"
+                      cachedDataType="i4"
+                      cachedName="id_Estado_Oficial"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[id_Estado_Oficial]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[id_Estado_Oficial]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Puntaje]"
+                      cachedDataType="numeric"
+                      cachedName="Puntaje"
+                      cachedPrecision="28"
+                      cachedScale="8"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Puntaje]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Puntaje]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Detalle_Puntaje]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Detalle_Puntaje"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Detalle_Puntaje]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Detalle_Puntaje]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Comentario]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="7000"
+                      cachedName="Comentario"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Comentario]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Comentario]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Nivel_Rev]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="25"
+                      cachedName="Nivel_Rev"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Nivel_Rev]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Nivel_Rev]" />
+                    <inputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Accion_Rev]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="Accion_Rev"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Accion_Rev]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Accion_Rev]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Numero_Cliente]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="Numero_Cliente" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Periodo]"
+                      codePage="1252"
+                      dataType="str"
+                      length="7"
+                      name="Periodo" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_01]"
+                      dataType="r8"
+                      name="Criterio_01" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_02]"
+                      dataType="r8"
+                      name="Criterio_02" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_03]"
+                      dataType="r8"
+                      name="Criterio_03" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_04]"
+                      dataType="r8"
+                      name="Criterio_04" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_05]"
+                      dataType="r8"
+                      name="Criterio_05" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_06]"
+                      dataType="r8"
+                      name="Criterio_06" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_07]"
+                      dataType="r8"
+                      name="Criterio_07" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_08]"
+                      dataType="r8"
+                      name="Criterio_08" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_09]"
+                      dataType="r8"
+                      name="Criterio_09" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_10]"
+                      dataType="r8"
+                      name="Criterio_10" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_11]"
+                      dataType="r8"
+                      name="Criterio_11" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_12]"
+                      dataType="r8"
+                      name="Criterio_12" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_13]"
+                      dataType="r8"
+                      name="Criterio_13" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_14]"
+                      dataType="r8"
+                      name="Criterio_14" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_15]"
+                      dataType="r8"
+                      name="Criterio_15" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_16]"
+                      dataType="r8"
+                      name="Criterio_16" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_17]"
+                      dataType="r8"
+                      name="Criterio_17" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_18]"
+                      dataType="r8"
+                      name="Criterio_18" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_19]"
+                      dataType="r8"
+                      name="Criterio_19" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_20]"
+                      dataType="r8"
+                      name="Criterio_20" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_21]"
+                      dataType="r8"
+                      name="Criterio_21" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_22]"
+                      dataType="r8"
+                      name="Criterio_22" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_23]"
+                      dataType="r8"
+                      name="Criterio_23" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_24]"
+                      dataType="r8"
+                      name="Criterio_24" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_25]"
+                      dataType="r8"
+                      name="Criterio_25" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_26]"
+                      dataType="r8"
+                      name="Criterio_26" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_27]"
+                      dataType="r8"
+                      name="Criterio_27" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_28]"
+                      dataType="r8"
+                      name="Criterio_28" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_29]"
+                      dataType="r8"
+                      name="Criterio_29" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Criterio_30]"
+                      dataType="r8"
+                      name="Criterio_30" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Estado]"
+                      codePage="1252"
+                      dataType="str"
+                      length="1"
+                      name="Estado" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fecha_Estado]"
+                      dataType="dbTimeStamp"
+                      name="Fecha_Estado" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fecha_Excepcion]"
+                      dataType="dbTimeStamp"
+                      name="Fecha_Excepcion" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Id_Aprobacion]"
+                      dataType="numeric"
+                      name="Id_Aprobacion"
+                      precision="18" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Numero_Reincidencia]"
+                      dataType="i2"
+                      name="Numero_Reincidencia" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fecha_Ult_Reincidencia]"
+                      dataType="dbTimeStamp"
+                      name="Fecha_Ult_Reincidencia" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Aplicar_Extension]"
+                      dataType="bool"
+                      name="Aplicar_Extension" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[id_Estado_Oficial]"
+                      dataType="i4"
+                      name="id_Estado_Oficial" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Puntaje]"
+                      dataType="numeric"
+                      name="Puntaje"
+                      precision="28"
+                      scale="8" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Detalle_Puntaje]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="Detalle_Puntaje" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Comentario]"
+                      codePage="1252"
+                      dataType="str"
+                      length="7000"
+                      name="Comentario" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Nivel_Rev]"
+                      codePage="1252"
+                      dataType="str"
+                      length="64"
+                      name="Nivel_Rev" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Accion_Rev]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="Accion_Rev" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Numero_Cliente]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Numero_Cliente]"
+                      name="Numero_Cliente" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Periodo]"
+                      codePage="1252"
+                      dataType="str"
+                      length="7"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Periodo]"
+                      name="Periodo" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_01]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_01]"
+                      name="Criterio_01" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_02]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_02]"
+                      name="Criterio_02" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_03]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_03]"
+                      name="Criterio_03" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_04]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_04]"
+                      name="Criterio_04" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_05]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_05]"
+                      name="Criterio_05" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_06]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_06]"
+                      name="Criterio_06" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_07]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_07]"
+                      name="Criterio_07" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_08]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_08]"
+                      name="Criterio_08" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_09]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_09]"
+                      name="Criterio_09" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_10]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_10]"
+                      name="Criterio_10" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_11]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_11]"
+                      name="Criterio_11" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_12]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_12]"
+                      name="Criterio_12" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_13]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_13]"
+                      name="Criterio_13" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_14]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_14]"
+                      name="Criterio_14" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_15]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_15]"
+                      name="Criterio_15" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_16]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_16]"
+                      name="Criterio_16" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_17]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_17]"
+                      name="Criterio_17" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_18]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_18]"
+                      name="Criterio_18" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_19]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_19]"
+                      name="Criterio_19" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_20]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_20]"
+                      name="Criterio_20" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_21]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_21]"
+                      name="Criterio_21" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_22]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_22]"
+                      name="Criterio_22" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_23]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_23]"
+                      name="Criterio_23" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_24]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_24]"
+                      name="Criterio_24" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_25]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_25]"
+                      name="Criterio_25" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_26]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_26]"
+                      name="Criterio_26" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_27]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_27]"
+                      name="Criterio_27" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_28]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_28]"
+                      name="Criterio_28" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_29]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_29]"
+                      name="Criterio_29" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_30]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Criterio_30]"
+                      name="Criterio_30" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Estado]"
+                      codePage="1252"
+                      dataType="str"
+                      length="1"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Estado]"
+                      name="Estado" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Fecha_Estado]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Fecha_Estado]"
+                      name="Fecha_Estado" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Fecha_Excepcion]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Fecha_Excepcion]"
+                      name="Fecha_Excepcion" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Id_Aprobacion]"
+                      dataType="numeric"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Id_Aprobacion]"
+                      name="Id_Aprobacion"
+                      precision="18" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Numero_Reincidencia]"
+                      dataType="i2"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Numero_Reincidencia]"
+                      name="Numero_Reincidencia" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Fecha_Ult_Reincidencia]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Fecha_Ult_Reincidencia]"
+                      name="Fecha_Ult_Reincidencia" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Aplicar_Extension]"
+                      dataType="bool"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[Aplicar_Extension]"
+                      name="Aplicar_Extension" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation;Microsoft SqlServer v9; (C) 2005 Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT     *
+FROM         SSS_Acumulado_Perfil
+WHERE     Periodo &lt;=  ?</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::FechaCaducidad</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping">"Parameter1",{791D6D5D-3695-46BC-B642-30286E6B7242};</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Sentinel_CR]"
+                  connectionManagerRefId="Package.ConnectionManagers[Sentinel_CR]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Numero_Cliente]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Numero_Cliente]"
+                      length="20"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Numero_Cliente]"
+                      name="Numero_Cliente"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Periodo]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Periodo]"
+                      length="7"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Periodo]"
+                      name="Periodo"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_01]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_01]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_01]"
+                      name="Criterio_01"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_02]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_02]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_02]"
+                      name="Criterio_02"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_03]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_03]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_03]"
+                      name="Criterio_03"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_04]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_04]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_04]"
+                      name="Criterio_04"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_05]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_05]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_05]"
+                      name="Criterio_05"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_06]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_06]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_06]"
+                      name="Criterio_06"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_07]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_07]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_07]"
+                      name="Criterio_07"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_08]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_08]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_08]"
+                      name="Criterio_08"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_09]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_09]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_09]"
+                      name="Criterio_09"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_10]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_10]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_10]"
+                      name="Criterio_10"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_11]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_11]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_11]"
+                      name="Criterio_11"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_12]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_12]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_12]"
+                      name="Criterio_12"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_13]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_13]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_13]"
+                      name="Criterio_13"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_14]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_14]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_14]"
+                      name="Criterio_14"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_15]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_15]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_15]"
+                      name="Criterio_15"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_16]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_16]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_16]"
+                      name="Criterio_16"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_17]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_17]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_17]"
+                      name="Criterio_17"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_18]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_18]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_18]"
+                      name="Criterio_18"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_19]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_19]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_19]"
+                      name="Criterio_19"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_20]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_20]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_20]"
+                      name="Criterio_20"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_21]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_21]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_21]"
+                      name="Criterio_21"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_22]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_22]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_22]"
+                      name="Criterio_22"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_23]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_23]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_23]"
+                      name="Criterio_23"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_24]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_24]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_24]"
+                      name="Criterio_24"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_25]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_25]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_25]"
+                      name="Criterio_25"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_26]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_26]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_26]"
+                      name="Criterio_26"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_27]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_27]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_27]"
+                      name="Criterio_27"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_28]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_28]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_28]"
+                      name="Criterio_28"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_29]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_29]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_29]"
+                      name="Criterio_29"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_30]"
+                      dataType="r8"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_30]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Criterio_30]"
+                      name="Criterio_30"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Estado]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Estado]"
+                      length="1"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Estado]"
+                      name="Estado"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Fecha_Estado]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Fecha_Estado]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Fecha_Estado]"
+                      name="Fecha_Estado"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Fecha_Excepcion]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Fecha_Excepcion]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Fecha_Excepcion]"
+                      name="Fecha_Excepcion"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Id_Aprobacion]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Id_Aprobacion]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Id_Aprobacion]"
+                      name="Id_Aprobacion"
+                      precision="18"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Numero_Reincidencia]"
+                      dataType="i2"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Numero_Reincidencia]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Numero_Reincidencia]"
+                      name="Numero_Reincidencia"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Fecha_Ult_Reincidencia]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Fecha_Ult_Reincidencia]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Fecha_Ult_Reincidencia]"
+                      name="Fecha_Ult_Reincidencia"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Aplicar_Extension]"
+                      dataType="bool"
+                      errorOrTruncationOperation="ErrorOrTruncationOperationConversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Aplicar_Extension]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Aplicar_Extension]"
+                      name="Aplicar_Extension"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[id_Estado_Oficial]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[id_Estado_Oficial]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[id_Estado_Oficial]"
+                      name="id_Estado_Oficial"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Puntaje]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Puntaje]"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Puntaje]"
+                      name="Puntaje"
+                      precision="28"
+                      scale="8"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Detalle_Puntaje]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Detalle_Puntaje]"
+                      length="100"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Detalle_Puntaje]"
+                      name="Detalle_Puntaje"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Comentario]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Comentario]"
+                      length="7000"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Comentario]"
+                      name="Comentario"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Nivel_Rev]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Nivel_Rev]"
+                      length="25"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Nivel_Rev]"
+                      name="Nivel_Rev"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Accion_Rev]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Accion_Rev]"
+                      length="20"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Accion_Rev]"
+                      name="Accion_Rev"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Numero_Cliente]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="Numero_Cliente" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Periodo]"
+                      codePage="1252"
+                      dataType="str"
+                      length="7"
+                      name="Periodo" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_01]"
+                      dataType="r8"
+                      name="Criterio_01" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_02]"
+                      dataType="r8"
+                      name="Criterio_02" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_03]"
+                      dataType="r8"
+                      name="Criterio_03" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_04]"
+                      dataType="r8"
+                      name="Criterio_04" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_05]"
+                      dataType="r8"
+                      name="Criterio_05" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_06]"
+                      dataType="r8"
+                      name="Criterio_06" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_07]"
+                      dataType="r8"
+                      name="Criterio_07" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_08]"
+                      dataType="r8"
+                      name="Criterio_08" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_09]"
+                      dataType="r8"
+                      name="Criterio_09" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_10]"
+                      dataType="r8"
+                      name="Criterio_10" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_11]"
+                      dataType="r8"
+                      name="Criterio_11" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_12]"
+                      dataType="r8"
+                      name="Criterio_12" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_13]"
+                      dataType="r8"
+                      name="Criterio_13" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_14]"
+                      dataType="r8"
+                      name="Criterio_14" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_15]"
+                      dataType="r8"
+                      name="Criterio_15" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_16]"
+                      dataType="r8"
+                      name="Criterio_16" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_17]"
+                      dataType="r8"
+                      name="Criterio_17" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_18]"
+                      dataType="r8"
+                      name="Criterio_18" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_19]"
+                      dataType="r8"
+                      name="Criterio_19" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_20]"
+                      dataType="r8"
+                      name="Criterio_20" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_21]"
+                      dataType="r8"
+                      name="Criterio_21" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_22]"
+                      dataType="r8"
+                      name="Criterio_22" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_23]"
+                      dataType="r8"
+                      name="Criterio_23" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_24]"
+                      dataType="r8"
+                      name="Criterio_24" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_25]"
+                      dataType="r8"
+                      name="Criterio_25" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_26]"
+                      dataType="r8"
+                      name="Criterio_26" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_27]"
+                      dataType="r8"
+                      name="Criterio_27" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_28]"
+                      dataType="r8"
+                      name="Criterio_28" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_29]"
+                      dataType="r8"
+                      name="Criterio_29" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Criterio_30]"
+                      dataType="r8"
+                      name="Criterio_30" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Estado]"
+                      codePage="1252"
+                      dataType="str"
+                      length="1"
+                      name="Estado" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Fecha_Estado]"
+                      dataType="dbTimeStamp"
+                      name="Fecha_Estado" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Fecha_Excepcion]"
+                      dataType="dbTimeStamp"
+                      name="Fecha_Excepcion" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Id_Aprobacion]"
+                      dataType="numeric"
+                      name="Id_Aprobacion"
+                      precision="18" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Numero_Reincidencia]"
+                      dataType="i2"
+                      name="Numero_Reincidencia" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Fecha_Ult_Reincidencia]"
+                      dataType="dbTimeStamp"
+                      name="Fecha_Ult_Reincidencia" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Aplicar_Extension]"
+                      dataType="bool"
+                      name="Aplicar_Extension" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[id_Estado_Oficial]"
+                      dataType="i4"
+                      name="id_Estado_Oficial" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Puntaje]"
+                      dataType="numeric"
+                      name="Puntaje"
+                      precision="28"
+                      scale="8" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Detalle_Puntaje]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="Detalle_Puntaje" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Comentario]"
+                      codePage="1252"
+                      dataType="str"
+                      length="7000"
+                      name="Comentario" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Nivel_Rev]"
+                      codePage="1252"
+                      dataType="str"
+                      length="25"
+                      name="Nivel_Rev" />
+                    <externalMetadataColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Accion_Rev]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="Accion_Rev" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Numero_Cliente]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Numero_Cliente]"
+                      name="Numero_Cliente" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Periodo]"
+                      codePage="1252"
+                      dataType="str"
+                      length="7"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Periodo]"
+                      name="Periodo" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_01]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_01]"
+                      name="Criterio_01" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_02]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_02]"
+                      name="Criterio_02" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_03]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_03]"
+                      name="Criterio_03" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_04]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_04]"
+                      name="Criterio_04" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_05]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_05]"
+                      name="Criterio_05" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_06]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_06]"
+                      name="Criterio_06" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_07]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_07]"
+                      name="Criterio_07" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_08]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_08]"
+                      name="Criterio_08" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_09]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_09]"
+                      name="Criterio_09" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_10]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_10]"
+                      name="Criterio_10" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_11]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_11]"
+                      name="Criterio_11" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_12]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_12]"
+                      name="Criterio_12" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_13]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_13]"
+                      name="Criterio_13" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_14]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_14]"
+                      name="Criterio_14" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_15]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_15]"
+                      name="Criterio_15" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_16]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_16]"
+                      name="Criterio_16" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_17]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_17]"
+                      name="Criterio_17" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_18]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_18]"
+                      name="Criterio_18" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_19]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_19]"
+                      name="Criterio_19" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_20]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_20]"
+                      name="Criterio_20" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_21]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_21]"
+                      name="Criterio_21" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_22]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_22]"
+                      name="Criterio_22" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_23]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_23]"
+                      name="Criterio_23" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_24]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_24]"
+                      name="Criterio_24" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_25]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_25]"
+                      name="Criterio_25" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_26]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_26]"
+                      name="Criterio_26" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_27]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_27]"
+                      name="Criterio_27" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_28]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_28]"
+                      name="Criterio_28" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_29]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_29]"
+                      name="Criterio_29" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_30]"
+                      dataType="r8"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Criterio_30]"
+                      name="Criterio_30" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Estado]"
+                      codePage="1252"
+                      dataType="str"
+                      length="1"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Estado]"
+                      name="Estado" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Fecha_Estado]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Fecha_Estado]"
+                      name="Fecha_Estado" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Fecha_Excepcion]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Fecha_Excepcion]"
+                      name="Fecha_Excepcion" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Id_Aprobacion]"
+                      dataType="numeric"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Id_Aprobacion]"
+                      name="Id_Aprobacion"
+                      precision="18" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Numero_Reincidencia]"
+                      dataType="i2"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Numero_Reincidencia]"
+                      name="Numero_Reincidencia" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Fecha_Ult_Reincidencia]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Fecha_Ult_Reincidencia]"
+                      name="Fecha_Ult_Reincidencia" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Aplicar_Extension]"
+                      dataType="bool"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Aplicar_Extension]"
+                      name="Aplicar_Extension" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[id_Estado_Oficial]"
+                      dataType="i4"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[id_Estado_Oficial]"
+                      name="id_Estado_Oficial" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Puntaje]"
+                      dataType="numeric"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Puntaje]"
+                      name="Puntaje"
+                      precision="28"
+                      scale="8" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Detalle_Puntaje]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Detalle_Puntaje]"
+                      name="Detalle_Puntaje" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Comentario]"
+                      codePage="1252"
+                      dataType="str"
+                      length="7000"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Comentario]"
+                      name="Comentario" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Nivel_Rev]"
+                      codePage="1252"
+                      dataType="str"
+                      length="25"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Nivel_Rev]"
+                      name="Nivel_Rev" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Accion_Rev]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Accion_Rev]"
+                      name="Accion_Rev" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\DTSTask_DTSDataPumpTask_1.Paths[OLE DB Source Output]"
+              endId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="OLE DB Source Output"
+              startId="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Obtiene Fecha Caducidad"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{20A12857-0D4C-4AA1-9EB4-8A4A590357D0}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Obtiene Fecha Caducidad"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; Microsoft SQL Server v9; © 2004 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{8159DEFB-8360-4EBE-8337-F238AC63E8CE}"
+          SQLTask:SqlStatementSource="SELECT     CONVERT(varchar(7), DATEADD(mm, - (CONVERT(int, valor)), &#xA;GETDATE()), 120) fecha&#xA;FROM         SSS_Configuracion&#xA;WHERE &#xA;    parametro = 'Accumulate_Query_Lapse'"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="fecha"
+            SQLTask:DtsVariableName="User::FechaCaducidad" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{45FEBD65-978D-490E-A388-2729E69885AF}"
+      DTS:From="Package\Obtiene Fecha Caducidad"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\DTSTask_DTSDataPumpTask_1" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{D79CB6ED-6171-4B2B-9125-7D68C6D4D3EE}"
+      DTS:From="Package\Controla Registros Duplicados"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Obtiene Fecha Caducidad" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{4B348453-254F-46D2-9DA3-18A5126581F7\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{4B348453-254F-46D2-9DA3-18A5126581F7}"
+      DTS:From="Package\DTSTask_DTSDataPumpTask_1"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{4B348453-254F-46D2-9DA3-18A5126581F7}"
+      DTS:To="Package\DelAcumulados" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta sección CDATA contiene la información de diseño del paquete. Esta sección incluye información como, por ejemplo, las coordenadas (x,y), el ancho y el alto.-->
+<!--Si edita manualmente esta sección y comete un error, puede eliminarlo. -->
+<!--El paquete podrá cargarse normalmente, pero se perderá la información de diseño anterior y el diseñador reorganizará los elementos automáticamente en la superficie de diseño.-->
+<Objects
+  Version="8">
+  <!--Cada uno de los nodos siguientes contiene propiedades que no afectan al comportamiento en tiempo de ejecución.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssge="clr-namespace:Microsoft.SqlServer.Graph.Extended;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <NodeLayout
+          Size="136,44"
+          Id="Package\Controla Registros Duplicados"
+          TopLeft="5.5,87.3490566037736" />
+        <NodeLayout
+          Size="136,44"
+          Id="Package\DelAcumulados"
+          TopLeft="552.896226415094,87.1603773584906" />
+        <NodeLayout
+          Size="136,44"
+          Id="Package\DTSTask_DTSDataPumpTask_1"
+          TopLeft="366.179245283019,87.311320754717" />
+        <NodeLayout
+          Size="136,44"
+          Id="Package\Obtiene Fecha Caducidad"
+          TopLeft="176.216981132075,87.4622641509434" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="311.990566037736,109.424528301887">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{x:Null}"
+              EndConnector="54.188679245283,-0.15094339622641"
+              Start="0,0"
+              End="46.688679245283,-0.15094339622641">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="27.0943396226415,0" />
+                  <mssgle:LineSegment
+                    End="27.0943396226415,-0.15094339622641" />
+                  <mssgle:LineSegment
+                    End="46.688679245283,-0.15094339622641" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="141.27358490566,109.311320754717">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{x:Null}"
+              EndConnector="34.9433962264151,0.113207547169807"
+              Start="0,0"
+              End="27.4433962264151,0.113207547169807">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="17.4716981132075,0" />
+                  <mssgle:LineSegment
+                    End="17.4716981132075,0.113207547169807" />
+                  <mssgle:LineSegment
+                    End="27.4433962264151,0.113207547169807" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[{4B348453-254F-46D2-9DA3-18A5126581F7\}]"
+          TopLeft="501.952830188679,109.27358490566">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{x:Null}"
+              EndConnector="50.9433962264151,-0.150943396226424"
+              Start="0,0"
+              End="43.4433962264151,-0.150943396226424">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="25.4716981132075,0" />
+                  <mssgle:LineSegment
+                    End="25.4716981132075,-0.150943396226424" />
+                  <mssgle:LineSegment
+                    End="43.4433962264151,-0.150943396226424" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <AnnotationLayout
+          Text="Histórico de Acumualdos"
+          ParentId="Package"
+          Size="270.4,44.8"
+          Id="3887fc8e-7870-479e-a92f-5507e3bd0363"
+          TopLeft="166.443396226415,5.5">
+          <AnnotationLayout.FontInfo>
+            <mssge:FontInfo
+              Family="Tahoma"
+              Size="17.25"
+              Color="#FF000000"
+              Weight="Bold">
+              <mssge:FontInfo.TextDecorations>
+                <av:TextDecorationCollection />
+              </mssge:FontInfo.TextDecorations>
+            </mssge:FontInfo>
+          </AnnotationLayout.FontInfo>
+        </AnnotationLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\DTSTask_DTSDataPumpTask_1">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="136,44"
+          Id="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination"
+          TopLeft="5.5,87.1603773584906" />
+        <NodeLayout
+          Size="136,44"
+          Id="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source"
+          TopLeft="5.5,5.5" />
+        <EdgeLayout
+          Id="Package\DTSTask_DTSDataPumpTask_1.Paths[OLE DB Source Output]"
+          TopLeft="73.3867924528302,49.4245283018868">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{x:Null}"
+              EndConnector="0,37.7358490566038"
+              Start="0,0"
+              End="0,30.2358490566038">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.2358490566038" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DTSTask_DTSDataPumpTask_1\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DTSTask_DTSDataPumpTask_1\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

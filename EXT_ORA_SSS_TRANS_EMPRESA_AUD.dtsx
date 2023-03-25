@@ -1,0 +1,1946 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="2/8/2016 10:06:00 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="SDS0100DB09"
+  DTS:CreatorName="PACIFICO\pmoreno"
+  DTS:DTSID="{67BE05D0-C9FA-4175-8DA3-DDF5BFCE73EF}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.157"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="EXT_ORA_SSS_TRANS_EMPRESA_AUD"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="213"
+  DTS:VersionGUID="{50311368-D0DD-49CE-85A4-73917FE6A6F5}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[SENTINEL_DESA senti_pkg]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{C81DE787-1D80-4A19-A8BB-9DA1339599D2}"
+      DTS:ObjectName="SENTINEL_DESA senti_pkg">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=SENTINEL_DESA;User ID=senti_pkg;Provider=OraOLEDB.Oracle.1;Persist Security Info=True;">
+          <EncryptedData
+            Type="http://www.w3.org/2001/04/xmlenc#Element"
+            Salt="f39Z9XPWmPw="
+            IV="YVXujaDviili6vVvgvRttQ==" xmlns="http://www.w3.org/2001/04/xmlenc#">
+            <EncryptionMethod
+              Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc" />
+            <CipherData>
+              <CipherValue>YVXujaDviili6vVvgvRttW15TWm6hxB6i78SNpv8c25b+/O1ZBWIaQIZEXp6XviGGU+flCa4z1M6NEtimM7VUHNZp4Hxm9xsVWTUxmW+0iy+Ov8X6T6RDeQAt3bAsqDz6MyFgROnjS1GeJvsdh74ZlHuLbUF5axociLAhAxi9z/dDWCXri9kX/WslxmPDGLJ</CipherValue>
+            </CipherData>
+          </EncryptedData>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Sentinel_Multitrama SentinelConsole]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{06A95964-7800-4AAC-A9B3-A4AD277896A0}"
+      DTS:ObjectName="Sentinel_Multitrama SentinelConsole">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=sds0100db72;Initial Catalog=Sentinel_Multitrama;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D0DE798D-71DE-4E61-8604-F519BDAE5799}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(&quot;UPDATE SNT_TATMTRANSACCIONES&#xA;&#xA;SET BND_SNT = 'C' WHERE id_transaccion  BETWEEN  &quot;)+ (DT_WSTR, 20) @[User::Valor_Parametro] &#xA;  +(&quot; AND &quot;)  +   (DT_WSTR, 20) @[User::MAX_Id_ORA]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Actualiza_BND_SNT">
+      <DTS:VariableValue
+        DTS:DataType="8">UPDATE SNT_TATMTRANSACCIONES
+
+SET BND_SNT = 'C' WHERE id_transaccion  BETWEEN  0 AND 0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{B1418A04-F830-4927-92E8-6273B06ACD7D}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(&quot;UPDATE [Sentinel_Multitrama].[dbo].[SDM_Control_Trans_Prevention]&#xA; SET Id_Control=&quot;) + (DT_WSTR, 20) @[User::MAX_Id_ORA]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Actualiza_Valor_Parametro">
+      <DTS:VariableValue
+        DTS:DataType="8">UPDATE [Sentinel_Multitrama].[dbo].[SDM_Control_Trans_Prevention]
+ SET Id_Control=0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{5DC94C3B-2C0B-4585-84D5-C97684C6784D}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(&quot;SELECT TO_CHAR(NUMEROTARJETA) , &#xA;&#xA;Monto_Local, &#xA;&#xA;CONCAT('TDE',CONCAT('-',SUBSTR(TO_CHAR(CTRANSACCIONATM),0,6))), &#xA;&#xA;TO_CHAR(DETALLEDISPOSITIVO),&#xA;&#xA;VALORDISPENSADO, FMOVIMIENTO, CASE TO_CHAR(TIPOMOVIMIENTO) WHEN 'N' THEN 'NAC' WHEN 'I' THEN 'INT' END,TO_CHAR(&#xA;&#xA;No_Autorizacion),&#xA;&#xA;CONCAT('TDE',CONCAT('-',SUBSTR(TO_CHAR(CODIGORESPUESTAFIT),0,6))), &#xA;Saldocuenta, TO_CHAR(&#xA;&#xA;TIPODISPOSITIVO)&#xA;&#xA;,CONCAT('TDE-', CMODOENTRADA),&#xA;&#xA;&#xA;&#xA;&#xA;CCATEGORIA_ESTABLECIMIENTO&#xA;, TO_CHAR(&#xA;CODIGOINSTITUCION),&#xA; &#xA;TO_CHAR(CODIGO_MONEDA), &#xA;SUBSTR(TO_CHAR(NUMEROTARJETA) ,0,6), &#xA;&#xA;TO_CHAR(CPAIS_ISO),&#xA;&#xA;CASE  TO_CHAR(ESTATUSREVERSO) WHEN '0' THEN 'NOR' WHEN '1' THEN 'REV' ELSE 'NULO' END || '/' || CASE MOTIVOREVERSO WHEN 'D' THEN 'DISP' WHEN 'A' THEN 'APP' WHEN 'T' THEN 'T.OUT'  ELSE '   ' END, SUBSTR(TO_CHAR(IDDISPOSITIVO),0,10),TO_CHAR(&#xA;'EMI-TD'),TO_CHAR(&#xA;&#xA;'BDP'), &#xA;&#xA;&#xA;&#xA;SYSDATE, &#xA;&#xA;&#xA;TO_CHAR(CCANAL_ORIGEN)||'/'||TO_CHAR(CCANAL_DESTINO)||'/'||TO_CHAR(CDISPOSITIVO), &#xA;&#xA;CASE TO_CHAR(STATUSTRANSACCION) WHEN 'N' THEN 'NORMAL' WHEN 'C' THEN 'CANCELADA' WHEN 'D' THEN 'DUDOSA' WHEN 'P' THEN 'REV. PARCIAL' WHEN 'T' THEN 'REV.TOTAL' ELSE 'NULO'  END, NOMBREEMBOSSING, CUENTADEBITADA, &#xA;&#xA;CUPODETARJETA, MONTOREVERSO, SALDODETARJETA,Fecha_Carga,FDEBITOREVERSO &#xA;&#xA;&#xA; &#xA;FROM SNT_TATMTRANSACCIONES UNCOMMITTED&#xA;&#xA;&#xA;WHERE Id_Transaccion &gt; &quot;)+(DT_WSTR, 20)@[User::Valor_Parametro]+(&quot; AND &quot;)+ (&quot; Id_Transaccion &lt;= &quot;) + (DT_WSTR, 20)@[User::MAX_Id_ORA]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Consulta">
+      <DTS:VariableValue
+        DTS:DataType="8">SELECT TO_CHAR(NUMEROTARJETA) , 
+
+Monto_Local, 
+
+CONCAT('TDE',CONCAT('-',SUBSTR(TO_CHAR(CTRANSACCIONATM),0,6))), 
+
+TO_CHAR(DETALLEDISPOSITIVO),
+
+VALORDISPENSADO, FMOVIMIENTO, CASE TO_CHAR(TIPOMOVIMIENTO) WHEN 'N' THEN 'NAC' WHEN 'I' THEN 'INT' END,TO_CHAR(
+
+No_Autorizacion),
+
+CONCAT('TDE',CONCAT('-',SUBSTR(TO_CHAR(CODIGORESPUESTAFIT),0,6))), 
+Saldocuenta, TO_CHAR(
+
+TIPODISPOSITIVO)
+
+,CONCAT('TDE-', CMODOENTRADA),
+
+
+
+
+CCATEGORIA_ESTABLECIMIENTO
+, TO_CHAR(
+CODIGOINSTITUCION),
+ 
+TO_CHAR(CODIGO_MONEDA), 
+SUBSTR(TO_CHAR(NUMEROTARJETA) ,0,6), 
+
+TO_CHAR(CPAIS_ISO),
+
+CASE  TO_CHAR(ESTATUSREVERSO) WHEN '0' THEN 'NOR' WHEN '1' THEN 'REV' ELSE 'NULO' END || '/' || CASE MOTIVOREVERSO WHEN 'D' THEN 'DISP' WHEN 'A' THEN 'APP' WHEN 'T' THEN 'T.OUT'  ELSE '   ' END, SUBSTR(TO_CHAR(IDDISPOSITIVO),0,10),TO_CHAR(
+'EMI-TD'),TO_CHAR(
+
+'BDP'), 
+
+
+
+SYSDATE, 
+
+
+TO_CHAR(CCANAL_ORIGEN)||'/'||TO_CHAR(CCANAL_DESTINO)||'/'||TO_CHAR(CDISPOSITIVO), 
+
+CASE TO_CHAR(STATUSTRANSACCION) WHEN 'N' THEN 'NORMAL' WHEN 'C' THEN 'CANCELADA' WHEN 'D' THEN 'DUDOSA' WHEN 'P' THEN 'REV. PARCIAL' WHEN 'T' THEN 'REV.TOTAL' ELSE 'NULO'  END, NOMBREEMBOSSING, CUENTADEBITADA, 
+
+CUPODETARJETA, MONTOREVERSO, SALDODETARJETA,Fecha_Carga,FDEBITOREVERSO 
+
+
+ 
+FROM SNT_TATMTRANSACCIONES UNCOMMITTED
+
+
+WHERE Id_Transaccion &gt; 0 AND  Id_Transaccion &lt;= 0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{51CF33D5-862E-4AF9-900C-B6D2D07A011D}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(&quot;SELECT     O.OR_ORDEN_BANCO, D .DT_ORDEN_BANCO , O.OR_ORDEN_EMPRESA, O.OR_ORDENANTE, O.OR_NEM_ORDENANTE, O.OR_PRODUCTO, O.OR_SERVICIO, O.OR_REFERENCIA, &#xA;O.OR_USR_GENERACION, O.OR_FCH_GENERACIONH, O.OR_FCH_TRANSMISIONH, O.OR_FCH_INICIO_PAGCOB, O.OR_FCH_VCTO, O.OR_FCH_REPROCESO, O.OR_PAIS_CTA, O.OR_TIPO_CTA, &#xA;O.OR_NUMERO_CTA, O.OR_BD_ACTIVO, O.OR_LOCALIDAD_ORIGEN, O.OR_DIR_IP, O.OR_USR_TRANSMISION, O.OR_NOM_ARCHIVO_TRANSMISION, O.OR_LOTE_ARCHIVO_TRANSMISION, &#xA;O.OR_CANT_ORDENES_SOLICITADAS, O.OR_VALOR_TOTAL_ORDENADO, O.OR_VALOR_TOTAL_APROBADO, O.OR_EST_APROBACION, O.OR_EST_TRANSMISION, D .DT_SECUENCIAL, D .DT_NUC_ORDENANTE, &#xA;D .DT_ORDENANTE, D .DT_REFERENCIA_GRUPO, D .DT_COD_TERCERO_EMPRESA, D .DT_NEM_ORDENANTE, D .DT_CONCEPTO, D .DT_MONEDA_ORDEN, D .DT_VALOR_ORDENADO, &#xA;D .DT_MONEDA_APROBACION, D .DT_VALOR_APROBADO, D .DT_SALDO, D .DT_COD_BANCO_CTA, D .DT_TIPO_CTA, D .DT_NUMERO_CUENTA, D .DT_PRODUCTO, D .DT_SERVICIO, &#xA;D .DT_TIPO_NUC_BENEFICIARIO, D .DT_NUC_BENEFICIARIO, D .DT_NOMBRE_BENEFICIARIO, D .DT_OFICINA_PAGCOB, D .DT_LOCALIDAD_PAGCOB, D .DT_FCH_VENCIMIENTO, D .DT_BD_SWIFT, &#xA;D .DT_FCH_PAGCOB, D .DT_FCH_ULTIMO_PROCESO, D .DT_EST_DETALLE, D .DT_COD_ERROR, D .DT_EST_TRANSMISION, A.AU_COD_EMPRESA, A.AU_COD_PRODUCTO, A.AU_COD_SERVICIO, &#xA;A.AU_SP_EJECUCION, A.AU_DESCRIPCION_ERROR, A.AU_FECHOR_REGISTRO, A.AU_COD_MODULO, A.AU_COD_TRANSACCION, A.AU_ESTACION, P.AP_COD_PRODUCTO, P.AP_NOM_PRODUCTO, &#xA;S.SE_COD_SERVICIO, S.SE_NOM_SERVICIO, L.LO_FCH_INGRESO, L.LO_FCH_SALIDA, L.LO_APLICACION, RU.RU_COD_USUARIO, RU.RU_USUARIO_INGRESO, E.EM_NOM_EMPRESA, U.US_ID_USUARIO, &#xA;ORD.OR_NUMERO_CTA AS NUMERO_CTA_SNT&#xA;FROM            SNT_BZP_CRG_ORDEN O &#xA;INNER JOIN SNT_BZP_CRG_DETALLE D ON O.OR_ORDEN_BANCO = D .DT_ORDEN_BANCO&#xA;LEFT JOIN SNT_BZA_AUDITORIA A ON O.OR_ORDEN_EMPRESA = A.AU_COD_EMPRESA &#xA;LEFT JOIN SNT_BZA_PRODUCTO P ON O.OR_PRODUCTO = P.AP_COD_PRODUCTO &#xA;LEFT JOIN SNT_BZA_SERVICIO S ON O.OR_SERVICIO = S.SE_COD_SERVICIO AND O.OR_PRODUCTO = S.SE_COD_PRODUCTO &#xA;LEFT JOIN SNT_BZA_LOGIN L ON O.OR_ORDEN_EMPRESA = L.LO_COD_EMPRESA &#xA;LEFT JOIN SNT_BZA_USUARIO U ON O.OR_ORDEN_EMPRESA = U.US_COD_EMPRESA &#xA;LEFT JOIN SNT_BZA_ROL_USUARIO RU ON O.OR_ORDEN_EMPRESA = RU.RU_COD_EMPRESA AND RU.RU_COD_USUARIO = U.US_COD_USUARIO &#xA;LEFT JOIN SNT_BZA_EMPRESA E ON O.OR_ORDEN_EMPRESA = E.EM_COD_EMPRESA &#xA;LEFT JOIN SNT_BZP_CRG_ORDEN ORD ON O.OR_ORDEN_EMPRESA = ORD.OR_ORDEN_EMPRESA&#xA;WHERE ROWNUM=1000&#xA;ORDER BY O.OR_ORDEN_BANCO ASC&quot;)"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ConsultaOracleEmpresa">
+      <DTS:VariableValue
+        DTS:DataType="8">SELECT     O.OR_ORDEN_BANCO, D .DT_ORDEN_BANCO , O.OR_ORDEN_EMPRESA, O.OR_ORDENANTE, O.OR_NEM_ORDENANTE, O.OR_PRODUCTO, O.OR_SERVICIO, O.OR_REFERENCIA, 
+O.OR_USR_GENERACION, O.OR_FCH_GENERACIONH, O.OR_FCH_TRANSMISIONH, O.OR_FCH_INICIO_PAGCOB, O.OR_FCH_VCTO, O.OR_FCH_REPROCESO, O.OR_PAIS_CTA, O.OR_TIPO_CTA, 
+O.OR_NUMERO_CTA, O.OR_BD_ACTIVO, O.OR_LOCALIDAD_ORIGEN, O.OR_DIR_IP, O.OR_USR_TRANSMISION, O.OR_NOM_ARCHIVO_TRANSMISION, O.OR_LOTE_ARCHIVO_TRANSMISION, 
+O.OR_CANT_ORDENES_SOLICITADAS, O.OR_VALOR_TOTAL_ORDENADO, O.OR_VALOR_TOTAL_APROBADO, O.OR_EST_APROBACION, O.OR_EST_TRANSMISION, D .DT_SECUENCIAL, D .DT_NUC_ORDENANTE, 
+D .DT_ORDENANTE, D .DT_REFERENCIA_GRUPO, D .DT_COD_TERCERO_EMPRESA, D .DT_NEM_ORDENANTE, D .DT_CONCEPTO, D .DT_MONEDA_ORDEN, D .DT_VALOR_ORDENADO, 
+D .DT_MONEDA_APROBACION, D .DT_VALOR_APROBADO, D .DT_SALDO, D .DT_COD_BANCO_CTA, D .DT_TIPO_CTA, D .DT_NUMERO_CUENTA, D .DT_PRODUCTO, D .DT_SERVICIO, 
+D .DT_TIPO_NUC_BENEFICIARIO, D .DT_NUC_BENEFICIARIO, D .DT_NOMBRE_BENEFICIARIO, D .DT_OFICINA_PAGCOB, D .DT_LOCALIDAD_PAGCOB, D .DT_FCH_VENCIMIENTO, D .DT_BD_SWIFT, 
+D .DT_FCH_PAGCOB, D .DT_FCH_ULTIMO_PROCESO, D .DT_EST_DETALLE, D .DT_COD_ERROR, D .DT_EST_TRANSMISION, A.AU_COD_EMPRESA, A.AU_COD_PRODUCTO, A.AU_COD_SERVICIO, 
+A.AU_SP_EJECUCION, A.AU_DESCRIPCION_ERROR, A.AU_FECHOR_REGISTRO, A.AU_COD_MODULO, A.AU_COD_TRANSACCION, A.AU_ESTACION, P.AP_COD_PRODUCTO, P.AP_NOM_PRODUCTO, 
+S.SE_COD_SERVICIO, S.SE_NOM_SERVICIO, L.LO_FCH_INGRESO, L.LO_FCH_SALIDA, L.LO_APLICACION, RU.RU_COD_USUARIO, RU.RU_USUARIO_INGRESO, E.EM_NOM_EMPRESA, U.US_ID_USUARIO, 
+ORD.OR_NUMERO_CTA AS NUMERO_CTA_SNT
+FROM            SNT_BZP_CRG_ORDEN O 
+INNER JOIN SNT_BZP_CRG_DETALLE D ON O.OR_ORDEN_BANCO = D .DT_ORDEN_BANCO
+LEFT JOIN SNT_BZA_AUDITORIA A ON O.OR_ORDEN_EMPRESA = A.AU_COD_EMPRESA 
+LEFT JOIN SNT_BZA_PRODUCTO P ON O.OR_PRODUCTO = P.AP_COD_PRODUCTO 
+LEFT JOIN SNT_BZA_SERVICIO S ON O.OR_SERVICIO = S.SE_COD_SERVICIO AND O.OR_PRODUCTO = S.SE_COD_PRODUCTO 
+LEFT JOIN SNT_BZA_LOGIN L ON O.OR_ORDEN_EMPRESA = L.LO_COD_EMPRESA 
+LEFT JOIN SNT_BZA_USUARIO U ON O.OR_ORDEN_EMPRESA = U.US_COD_EMPRESA 
+LEFT JOIN SNT_BZA_ROL_USUARIO RU ON O.OR_ORDEN_EMPRESA = RU.RU_COD_EMPRESA AND RU.RU_COD_USUARIO = U.US_COD_USUARIO 
+LEFT JOIN SNT_BZA_EMPRESA E ON O.OR_ORDEN_EMPRESA = E.EM_COD_EMPRESA 
+LEFT JOIN SNT_BZP_CRG_ORDEN ORD ON O.OR_ORDEN_EMPRESA = ORD.OR_ORDEN_EMPRESA
+WHERE ROWNUM=1000
+ORDER BY O.OR_ORDEN_BANCO ASC</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{30135AA9-C944-48B8-9C64-45C0983929FF}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="IDControlEmpresa">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{834614C3-F066-4144-B267-59C78EC962C0}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(&quot;SELECT MAX(ID_TRANSACCION)&#xA;FROM SNT_TATMTRANSACCIONES&#xA;WHERE BND_SNT 0 'C'&quot;)"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ID_MAX_NUEVO">
+      <DTS:VariableValue
+        DTS:DataType="8">SELECT MAX(ID_TRANSACCION)
+FROM SNT_TATMTRANSACCIONES
+WHERE BND_SNT 0 'C'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{7A80E560-E0FE-4401-9FE2-6A7AF1D407D1}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="MaxIdControlEmpresa">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A906E211-050D-4E28-83F3-B52C985C481E}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="MAX_Id_ORA">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{B657DB7C-AB6E-4A85-BF14-B4BFC6042CEE}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(&quot;UPDATE [Sentinel_Multitrama].[dbo].[SDM_Control_Trans_Empresa_Cash]&#xA; SET Id_Control=&quot;) + (DT_WSTR, 20)  @[User::MaxIdControlEmpresa]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="OpUpdateControlEmpresa">
+      <DTS:VariableValue
+        DTS:DataType="8">UPDATE [Sentinel_Multitrama].[dbo].[SDM_Control_Trans_Empresa_Cash]
+ SET Id_Control=0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D633DF38-A7F5-43D6-8B4C-E239B845F68B}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="UEN">
+      <DTS:VariableValue
+        DTS:DataType="8">BCP</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1D9651A9-06B8-4F73-A96A-1DF429618AF9}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="Valida_Carga">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C4800329-8E0E-4D8F-856D-C0BE95F92664}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="Valor_Parametro">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:LoggingOptions
+    DTS:FilterKind="0"
+    DTS:LoggingMode="1">
+    <DTS:Property
+      DTS:DataType="8"
+      DTS:Name="EventFilter">2,7,OnError,12,OnTaskFailed</DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnError"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnTaskFailed"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+  </DTS:LoggingOptions>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Actualiza Valor Parametro Auditoria"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{C641B9D8-4E27-49AE-A912-306C651CC1D8}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Actualiza Valor Parametro Auditoria"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{06A95964-7800-4AAC-A9B3-A4AD277896A0}"
+          SQLTask:SqlStatementSource="USE [Sentinel_Multitrama]&#xA;GO&#xA;DECLARE @MaxSecuencia_Auditoria as int&#xA;DECLARE @Id_Control_Aud as int&#xA;Select @MaxSecuencia_Auditoria = MAX(Secuencia_Auditoria) from SDM_SSS_Trans_Empresa_Auditoria&#xA;Select @Id_Control_Aud = Id_Control_Aud from SDM_Control_Trans_Empresa_Cash&#xA;&#xA;if(@MaxSecuencia_Auditoria&gt;@Id_Control_Aud)&#xA;&#x9;begin&#xA;&#x9;&#x9;update SDM_Control_Trans_Empresa_Cash&#xA;&#x9;&#x9;set Id_Control_Aud = @MaxSecuencia_Auditoria&#xA;&#x9;end&#xA;&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Actualizar campo bandera a C Auditoria"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{C4759BC1-3286-44E5-873A-B49D16D3DE56}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Actualizar campo bandera a C Auditoria"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{C81DE787-1D80-4A19-A8BB-9DA1339599D2}"
+          SQLTask:SqlStatementSource="Declare&#xA;  Ln_Cont_Del                 Number(8);&#xA;&#xA;  Cursor C_snt_Bza_auditoria IS&#xA;     select rowid&#xA;     from senti_obj.snt_Bza_auditoria &#xA;     where band_snt = 'P';&#xA;&#xA;  Begin&#xA;    Ln_Cont_Del := 0;&#xA;    For i In C_snt_Bza_auditoria&#xA;    Loop&#xA;       Begin      &#xA;          update senti_obj.snt_Bza_auditoria t&#xA;          set t.band_snt = 'C' where rowid = i.rowid;  &#xA;          Ln_Cont_Del := Ln_Cont_Del + 1;&#xA;       Exception   &#xA;          When others then                &#xA;          dbms_output.put_line('snt_Bza_auditoria ' || i.rowid || ' Err ' || Substr(SQLERRM, 1, 200));               &#xA;       End;        &#xA;&#xA;       IF MOD(Ln_Cont_Del, 10000) = 0 THEN&#xA;          Commit;&#xA;       END IF;                             &#xA;&#xA;    End Loop;&#xA;    &#xA;    commit;&#xA;    dbms_output.put_line('Finaliza  Proceso snt_Bza_auditoria ' || to_char(sysdate, 'dd-mm-yyyy hh24:mi:ss'));&#xA;&#xA;   Exception&#xA;      When NO_DATA_FOUND then&#xA;                      dbms_output.put_line('senti_obj.snt_Bza_auditoria');&#xA;&#xA;      When others then&#xA;           dbms_output.put_line('Finaliza  mal el Proceso snt_Bza_auditoria ' || to_char(sysdate, 'dd-mm-yyyy hh24:mi:ss'));&#xA;           dbms_output.put_line('Descripción Error ' || Substr(SQLERRM, 1, 200));&#xA;  End;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Actualizar campo bandera a P Auditoria"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{61C0EDA5-87B9-491B-88AD-713DCAA95188}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Actualizar campo bandera a P Auditoria"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{C81DE787-1D80-4A19-A8BB-9DA1339599D2}"
+          SQLTask:SqlStatementSource="Declare&#xA;  Ln_Cont_Del                 Number(8);&#xA;&#xA;  Cursor C_snt_Bza_auditoria IS&#xA;     select rowid&#xA;     from senti_obj.snt_Bza_auditoria &#xA;     where band_snt = 'N';&#xA;&#xA;  Begin&#xA;    Ln_Cont_Del := 0;&#xA;    For i In C_snt_Bza_auditoria&#xA;    Loop&#xA;       Begin      &#xA;          update senti_obj.snt_Bza_auditoria t&#xA;          set t.band_snt = 'P' where rowid = i.rowid;  &#xA;          Ln_Cont_Del := Ln_Cont_Del + 1;&#xA;       Exception   &#xA;          When others then                &#xA;          dbms_output.put_line('snt_Bza_auditoria ' || i.rowid || ' Err ' || Substr(SQLERRM, 1, 200));               &#xA;       End;        &#xA;&#xA;       IF MOD(Ln_Cont_Del, 10000) = 0 THEN&#xA;          Commit;&#xA;       END IF;                             &#xA;&#xA;    End Loop;&#xA;    &#xA;    commit;&#xA;    dbms_output.put_line('Finaliza  Proceso snt_Bza_auditoria ' || to_char(sysdate, 'dd-mm-yyyy hh24:mi:ss'));&#xA;&#xA;   Exception&#xA;      When NO_DATA_FOUND then&#xA;                      dbms_output.put_line('senti_obj.snt_Bza_auditoria');&#xA;&#xA;      When others then&#xA;           dbms_output.put_line('Finaliza  mal el Proceso snt_Bza_auditoria ' || to_char(sysdate, 'dd-mm-yyyy hh24:mi:ss'));&#xA;           dbms_output.put_line('Descripción Error ' || Substr(SQLERRM, 1, 200));&#xA;  End;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{1CD1A26A-63E4-4AA7-AF82-C9E540A7DA1F}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="EXT_ORA_SSS_TRANS_EMPRESA_AUD"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Data Conversion"
+              name="Data Conversion"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input]"
+                  name="Data Conversion Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input].Columns[AU_COD_EMPRESA]"
+                      cachedDataType="numeric"
+                      cachedName="AU_COD_EMPRESA"
+                      cachedPrecision="10"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_EMPRESA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input].Columns[AU_COD_PRODUCTO]"
+                      cachedDataType="numeric"
+                      cachedName="AU_COD_PRODUCTO"
+                      cachedPrecision="10"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_PRODUCTO]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input].Columns[AU_SP_EJECUCION]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="AU_SP_EJECUCION"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_SP_EJECUCION]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input].Columns[AU_DESCRIPCION_ERROR]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="AU_DESCRIPCION_ERROR"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_DESCRIPCION_ERROR]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input].Columns[AU_FECHOR_REGISTRO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="AU_FECHOR_REGISTRO"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_FECHOR_REGISTRO]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input].Columns[AU_COD_MODULO]"
+                      cachedDataType="numeric"
+                      cachedName="AU_COD_MODULO"
+                      cachedPrecision="10"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_MODULO]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input].Columns[AU_COD_TRANSACCION]"
+                      cachedDataType="numeric"
+                      cachedName="AU_COD_TRANSACCION"
+                      cachedPrecision="10"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_TRANSACCION]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input].Columns[AU_ESTACION]"
+                      cachedDataType="wstr"
+                      cachedLength="35"
+                      cachedName="AU_ESTACION"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_ESTACION]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input].Columns[AU_COD_SERVICIO]"
+                      cachedDataType="wstr"
+                      cachedLength="10"
+                      cachedName="AU_COD_SERVICIO"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_SERVICIO]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input].Columns[AU_SEC_AUDITORIA]"
+                      cachedDataType="numeric"
+                      cachedName="AU_SEC_AUDITORIA"
+                      cachedPrecision="10"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_SEC_AUDITORIA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input].Columns[EM_NUC_EMPRESA]"
+                      cachedDataType="wstr"
+                      cachedLength="13"
+                      cachedName="EM_NUC_EMPRESA"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[EM_NUC_EMPRESA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input].Columns[AP_NOM_PRODUCTO]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="AP_NOM_PRODUCTO"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AP_NOM_PRODUCTO]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input].Columns[SE_NOM_SERVICIO]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="SE_NOM_SERVICIO"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[SE_NOM_SERVICIO]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output]"
+                  exclusionGroup="1"
+                  name="Data Conversion Output"
+                  synchronousInputId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_EMPRESA]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_EMPRESA]"
+                      name="Copy of AU_COD_EMPRESA"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_EMPRESA]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_PRODUCTO]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_PRODUCTO]"
+                      name="Copy of AU_COD_PRODUCTO"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_PRODUCTO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_SP_EJECUCION]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="50"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_SP_EJECUCION]"
+                      name="Copy of AU_SP_EJECUCION"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_SP_EJECUCION]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_DESCRIPCION_ERROR]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_DESCRIPCION_ERROR]"
+                      name="Copy of AU_DESCRIPCION_ERROR"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_DESCRIPCION_ERROR]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_FECHOR_REGISTRO]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_FECHOR_REGISTRO]"
+                      name="Copy of AU_FECHOR_REGISTRO"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_FECHOR_REGISTRO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_MODULO]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_MODULO]"
+                      name="Copy of AU_COD_MODULO"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_MODULO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_TRANSACCION]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_TRANSACCION]"
+                      name="Copy of AU_COD_TRANSACCION"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_TRANSACCION]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_ESTACION]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="35"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_ESTACION]"
+                      name="Copy of AU_ESTACION"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_ESTACION]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_SERVICIO]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="10"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_SERVICIO]"
+                      name="Copy of AU_COD_SERVICIO"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_SERVICIO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_SEC_AUDITORIA]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_SEC_AUDITORIA]"
+                      name="Copy of AU_SEC_AUDITORIA"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_SEC_AUDITORIA]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of EM_NUC_EMPRESA]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="IgnoreFailure"
+                      length="20"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of EM_NUC_EMPRESA]"
+                      name="Copy of EM_NUC_EMPRESA"
+                      truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[EM_NUC_EMPRESA]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AP_NOM_PRODUCTO]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="IgnoreFailure"
+                      length="50"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AP_NOM_PRODUCTO]"
+                      name="Copy of AP_NOM_PRODUCTO"
+                      truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AP_NOM_PRODUCTO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of SE_NOM_SERVICIO]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="IgnoreFailure"
+                      length="50"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of SE_NOM_SERVICIO]"
+                      name="Copy of SE_NOM_SERVICIO"
+                      truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[SE_NOM_SERVICIO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Data Conversion Error Output"
+                  synchronousInputId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="EXT_ORA_FUENTE_EMPRESA_AUDITORIA"
+              usesDispositions="true"
+              validateExternalMetadata="False"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"SENTI_OBJ"."SNT_BZP_CRG_ORDEN"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT   au.au_sec_auditoria, au.au_cod_empresa, au.au_cod_usuario, au.au_fechor_registro, au.au_cod_producto, au.au_cod_servicio , au.au_cod_modulo, au.au_cod_transaccion, 
+         au.au_opcion, au.au_estacion, au.au_fechor_registrosal, au.au_registros_salida, au.au_sp_ejecucion , au.au_descripcion_error,E.EM_NUC_EMPRESA,
+		 P.AP_COD_PRODUCTO,P.AP_NOM_PRODUCTO,S.SE_COD_SERVICIO,S.SE_NOM_SERVICIO
+FROM snt_Bza_auditoria au
+LEFT JOIN SNT_BZA_EMPRESA E ON E.EM_COD_EMPRESA= AU.AU_COD_BANCO
+LEFT JOIN SNT_BZA_PRODUCTO P ON P.AP_COD_PRODUCTO= AU.AU_COD_PRODUCTO
+LEFT JOIN SNT_BZA_SERVICIO S ON S.SE_COD_PRODUCTO= AU.AU_COD_PRODUCTO AND AU.AU_COD_SERVICIO = S.SE_COD_SERVICIO
+WHERE ( au.BAND_SNT = 'P')</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::Consulta</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[SENTINEL_DESA senti_pkg]"
+                  connectionManagerRefId="Package.ConnectionManagers[SENTINEL_DESA senti_pkg]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_SEC_AUDITORIA]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_SEC_AUDITORIA]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_SEC_AUDITORIA]"
+                      name="AU_SEC_AUDITORIA"
+                      precision="10"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_EMPRESA]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_COD_EMPRESA]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_EMPRESA]"
+                      name="AU_COD_EMPRESA"
+                      precision="10"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_USUARIO]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_COD_USUARIO]"
+                      length="20"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_USUARIO]"
+                      name="AU_COD_USUARIO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_FECHOR_REGISTRO]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_FECHOR_REGISTRO]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_FECHOR_REGISTRO]"
+                      name="AU_FECHOR_REGISTRO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_PRODUCTO]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_COD_PRODUCTO]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_PRODUCTO]"
+                      name="AU_COD_PRODUCTO"
+                      precision="10"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_MODULO]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_COD_MODULO]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_MODULO]"
+                      name="AU_COD_MODULO"
+                      precision="10"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_TRANSACCION]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_COD_TRANSACCION]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_TRANSACCION]"
+                      name="AU_COD_TRANSACCION"
+                      precision="10"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_OPCION]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_OPCION]"
+                      length="2"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_OPCION]"
+                      name="AU_OPCION"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_ESTACION]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_ESTACION]"
+                      length="35"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_ESTACION]"
+                      name="AU_ESTACION"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_FECHOR_REGISTROSAL]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_FECHOR_REGISTROSAL]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_FECHOR_REGISTROSAL]"
+                      name="AU_FECHOR_REGISTROSAL"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_REGISTROS_SALIDA]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_REGISTROS_SALIDA]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_REGISTROS_SALIDA]"
+                      name="AU_REGISTROS_SALIDA"
+                      precision="8"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_SP_EJECUCION]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_SP_EJECUCION]"
+                      length="50"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_SP_EJECUCION]"
+                      name="AU_SP_EJECUCION"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_DESCRIPCION_ERROR]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_DESCRIPCION_ERROR]"
+                      length="255"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_DESCRIPCION_ERROR]"
+                      name="AU_DESCRIPCION_ERROR"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_SERVICIO]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_COD_SERVICIO]"
+                      length="10"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AU_COD_SERVICIO]"
+                      name="AU_COD_SERVICIO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[EM_NUC_EMPRESA]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[EM_NUC_EMPRESA]"
+                      length="13"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[EM_NUC_EMPRESA]"
+                      name="EM_NUC_EMPRESA"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AP_COD_PRODUCTO]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AP_COD_PRODUCTO]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AP_COD_PRODUCTO]"
+                      name="AP_COD_PRODUCTO"
+                      precision="2"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AP_NOM_PRODUCTO]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AP_NOM_PRODUCTO]"
+                      length="50"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[AP_NOM_PRODUCTO]"
+                      name="AP_NOM_PRODUCTO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[SE_COD_SERVICIO]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[SE_COD_SERVICIO]"
+                      length="10"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[SE_COD_SERVICIO]"
+                      name="SE_COD_SERVICIO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[SE_NOM_SERVICIO]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[SE_NOM_SERVICIO]"
+                      length="50"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].Columns[SE_NOM_SERVICIO]"
+                      name="SE_NOM_SERVICIO"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_SEC_AUDITORIA]"
+                      dataType="numeric"
+                      name="AU_SEC_AUDITORIA"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_COD_EMPRESA]"
+                      dataType="numeric"
+                      name="AU_COD_EMPRESA"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_COD_USUARIO]"
+                      dataType="wstr"
+                      length="20"
+                      name="AU_COD_USUARIO" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_FECHOR_REGISTRO]"
+                      dataType="dbTimeStamp"
+                      name="AU_FECHOR_REGISTRO" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_COD_PRODUCTO]"
+                      dataType="numeric"
+                      name="AU_COD_PRODUCTO"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_COD_MODULO]"
+                      dataType="numeric"
+                      name="AU_COD_MODULO"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_COD_TRANSACCION]"
+                      dataType="numeric"
+                      name="AU_COD_TRANSACCION"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_OPCION]"
+                      dataType="wstr"
+                      length="2"
+                      name="AU_OPCION" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_ESTACION]"
+                      dataType="wstr"
+                      length="35"
+                      name="AU_ESTACION" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_FECHOR_REGISTROSAL]"
+                      dataType="dbTimeStamp"
+                      name="AU_FECHOR_REGISTROSAL" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_REGISTROS_SALIDA]"
+                      dataType="numeric"
+                      name="AU_REGISTROS_SALIDA"
+                      precision="8" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_SP_EJECUCION]"
+                      dataType="wstr"
+                      length="50"
+                      name="AU_SP_EJECUCION" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_DESCRIPCION_ERROR]"
+                      dataType="wstr"
+                      length="255"
+                      name="AU_DESCRIPCION_ERROR" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AU_COD_SERVICIO]"
+                      dataType="wstr"
+                      length="10"
+                      name="AU_COD_SERVICIO" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[EM_NUC_EMPRESA]"
+                      dataType="wstr"
+                      length="13"
+                      name="EM_NUC_EMPRESA" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AP_COD_PRODUCTO]"
+                      dataType="numeric"
+                      name="AP_COD_PRODUCTO"
+                      precision="2" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[AP_NOM_PRODUCTO]"
+                      dataType="wstr"
+                      length="50"
+                      name="AP_NOM_PRODUCTO" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[SE_COD_SERVICIO]"
+                      dataType="wstr"
+                      length="10"
+                      name="SE_COD_SERVICIO" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output].ExternalColumns[SE_NOM_SERVICIO]"
+                      dataType="wstr"
+                      length="50"
+                      name="SE_NOM_SERVICIO" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_SEC_AUDITORIA]"
+                      dataType="numeric"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_SEC_AUDITORIA]"
+                      name="AU_SEC_AUDITORIA"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_COD_EMPRESA]"
+                      dataType="numeric"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_COD_EMPRESA]"
+                      name="AU_COD_EMPRESA"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_COD_USUARIO]"
+                      dataType="wstr"
+                      length="20"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_COD_USUARIO]"
+                      name="AU_COD_USUARIO" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_FECHOR_REGISTRO]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_FECHOR_REGISTRO]"
+                      name="AU_FECHOR_REGISTRO" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_COD_PRODUCTO]"
+                      dataType="numeric"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_COD_PRODUCTO]"
+                      name="AU_COD_PRODUCTO"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_COD_SERVICIO]"
+                      dataType="wstr"
+                      length="10"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_COD_SERVICIO]"
+                      name="AU_COD_SERVICIO" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_COD_MODULO]"
+                      dataType="numeric"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_COD_MODULO]"
+                      name="AU_COD_MODULO"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_COD_TRANSACCION]"
+                      dataType="numeric"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_COD_TRANSACCION]"
+                      name="AU_COD_TRANSACCION"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_OPCION]"
+                      dataType="wstr"
+                      length="2"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_OPCION]"
+                      name="AU_OPCION" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_ESTACION]"
+                      dataType="wstr"
+                      length="35"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_ESTACION]"
+                      name="AU_ESTACION" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_FECHOR_REGISTROSAL]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_FECHOR_REGISTROSAL]"
+                      name="AU_FECHOR_REGISTROSAL" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_REGISTROS_SALIDA]"
+                      dataType="numeric"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_REGISTROS_SALIDA]"
+                      name="AU_REGISTROS_SALIDA"
+                      precision="8" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_SP_EJECUCION]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_SP_EJECUCION]"
+                      name="AU_SP_EJECUCION" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_DESCRIPCION_ERROR]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AU_DESCRIPCION_ERROR]"
+                      name="AU_DESCRIPCION_ERROR" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[EM_NUC_EMPRESA]"
+                      dataType="wstr"
+                      length="13"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[EM_NUC_EMPRESA]"
+                      name="EM_NUC_EMPRESA" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AP_COD_PRODUCTO]"
+                      dataType="numeric"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AP_COD_PRODUCTO]"
+                      name="AP_COD_PRODUCTO"
+                      precision="2" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AP_NOM_PRODUCTO]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[AP_NOM_PRODUCTO]"
+                      name="AP_NOM_PRODUCTO" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[SE_COD_SERVICIO]"
+                      dataType="wstr"
+                      length="10"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[SE_COD_SERVICIO]"
+                      name="SE_COD_SERVICIO" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[SE_NOM_SERVICIO]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[SE_NOM_SERVICIO]"
+                      name="SE_NOM_SERVICIO" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[SDM_SSS_Trans_Empresa_Auditoria]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Sentinel_Multitrama SentinelConsole]"
+                  connectionManagerRefId="Package.ConnectionManagers[Sentinel_Multitrama SentinelConsole]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="IgnoreFailure"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of AU_SEC_AUDITORIA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Copy of AU_SEC_AUDITORIA"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Secuencia_Auditoria]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_SEC_AUDITORIA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of AU_COD_PRODUCTO]"
+                      cachedDataType="i4"
+                      cachedName="Copy of AU_COD_PRODUCTO"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Cod_Producto]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_PRODUCTO]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of AU_COD_SERVICIO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="Copy of AU_COD_SERVICIO"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Cod_Servicio]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_SERVICIO]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of AU_SP_EJECUCION]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Copy of AU_SP_EJECUCION"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Ejecucion]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_SP_EJECUCION]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of AU_DESCRIPCION_ERROR]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="Copy of AU_DESCRIPCION_ERROR"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Error_Auditoria]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_DESCRIPCION_ERROR]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of AU_FECHOR_REGISTRO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="Copy of AU_FECHOR_REGISTRO"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fecha_Registro]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_FECHOR_REGISTRO]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of AU_COD_MODULO]"
+                      cachedDataType="i4"
+                      cachedName="Copy of AU_COD_MODULO"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Codigo_Modulo]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_MODULO]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of AU_COD_TRANSACCION]"
+                      cachedDataType="i4"
+                      cachedName="Copy of AU_COD_TRANSACCION"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Codigo_Transaccion]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_TRANSACCION]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of AU_ESTACION]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="35"
+                      cachedName="Copy of AU_ESTACION"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IP]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_ESTACION]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of EM_NUC_EMPRESA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="Copy of EM_NUC_EMPRESA"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Numero_Cliente]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of EM_NUC_EMPRESA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of AU_COD_EMPRESA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Copy of AU_COD_EMPRESA"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Codigo_Empresa]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AU_COD_EMPRESA]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of AP_NOM_PRODUCTO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Copy of AP_NOM_PRODUCTO"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Nom_Producto]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of AP_NOM_PRODUCTO]" />
+                    <inputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of SE_NOM_SERVICIO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Copy of SE_NOM_SERVICIO"
+                      externalMetadataColumnId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Nom_Servicio]"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of SE_NOM_SERVICIO]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Id_Transaccion]"
+                      dataType="numeric"
+                      name="Id_Transaccion"
+                      precision="18" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Id_UEN]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="Id_UEN" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fecha_Ingreso]"
+                      dataType="dbTimeStamp"
+                      name="Fecha_Ingreso" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fecha]"
+                      dataType="dbTimeStamp"
+                      name="Fecha" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Secuencia_Auditoria]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="Secuencia_Auditoria" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Numero_Cliente]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="Numero_Cliente" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Cod_Producto]"
+                      dataType="numeric"
+                      name="Cod_Producto"
+                      precision="18" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Cod_Servicio]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="Cod_Servicio" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Ejecucion]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Ejecucion" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Error_Auditoria]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="Error_Auditoria" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Fecha_Registro]"
+                      dataType="dbTimeStamp"
+                      name="Fecha_Registro" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Codigo_Modulo]"
+                      dataType="numeric"
+                      name="Codigo_Modulo"
+                      precision="18" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Codigo_Transaccion]"
+                      dataType="numeric"
+                      name="Codigo_Transaccion"
+                      precision="18" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IP]"
+                      codePage="1252"
+                      dataType="str"
+                      length="35"
+                      name="IP" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Archivo_Fuente]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Archivo_Fuente" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Codigo_Empresa]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="Codigo_Empresa" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Nom_Producto]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Nom_Producto" />
+                    <externalMetadataColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Nom_Servicio]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Nom_Servicio" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD.Paths[Data Conversion Output]"
+              endId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="Data Conversion Output"
+              startId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Outputs[Data Conversion Output]" />
+            <path
+              refId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD.Paths[OLE DB Source Output]"
+              endId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion.Inputs[Data Conversion Input]"
+              name="OLE DB Source Output"
+              startId="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Inserta Intermedia hacia Trama Sentinel"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{46AAA214-54F5-4270-8FC5-ED35FDAC886E}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Inserta Intermedia hacia Trama Sentinel"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{06A95964-7800-4AAC-A9B3-A4AD277896A0}"
+          SQLTask:SqlStatementSource="USE [Sentinel_Multitrama]&#xA;GO&#xA;&#xA;DECLARE @MaxIdControlEmpresaAud as int&#xA;Select @MaxIdControlEmpresaAud = Id_Control_Aud from SDM_Control_Trans_Empresa_Cash&#xA;&#xA;&#xA;INSERT INTO [ST05].[SSS_Trans]([Id_UEN],[Fecha_Ingreso],[Fecha],[Numero_Cliente],[Cod_Producto]&#xA;           ,[Cod_Servicio] ,[Ejecucion],[Error_Auditoria],[Fecha_Registro],[Codigo_Modulo],[Codigo_Transaccion],[IP],[Archivo_Fuente],[Codigo_Empresa],[Nom_Producto]&#xA;           ,[Nom_Servicio])&#xA;SELECT 'BCP',GETDATE(),[Fecha_Registro],C.[Numero_Cliente],[Cod_Producto]&#xA;           ,[Cod_Servicio] ,[Ejecucion],[Error_Auditoria],[Fecha_Registro],[Codigo_Modulo],[Codigo_Transaccion],[IP] , 'AUDI_CASH',[Codigo_Empresa],[Nom_Producto],[Nom_Servicio]&#xA;FROM SDM_SSS_Trans_Empresa_Auditoria A&#xA;LEFT JOIN STO.SSS_Clientes C&#xA;ON A.Numero_Cliente = C.Identificacion&#xA;WHERE Secuencia_Auditoria &gt; @MaxIdControlEmpresaAud&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Limpia tabla intermedia SDM_SSS_Trans_Empresa_Auditoria"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{60C6FD29-0388-4501-B826-AC59E62A2C93}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpia tabla intermedia SDM_SSS_Trans_Empresa_Auditoria"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{06A95964-7800-4AAC-A9B3-A4AD277896A0}"
+          SQLTask:BypassPrepare="False"
+          SQLTask:SqlStatementSource="truncate table SDM_SSS_Trans_Empresa_Auditoria" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{1DE19A9C-043B-43D8-B974-68883489A48E}"
+      DTS:From="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Actualizar campo bandera a C Auditoria" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{5F4316A7-8BDE-4F57-BB3F-6FCBA9A53547}"
+      DTS:From="Package\Limpia tabla intermedia SDM_SSS_Trans_Empresa_Auditoria"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{B7C09C00-3251-46D7-A11F-0D128FB93993}"
+      DTS:From="Package\Inserta Intermedia hacia Trama Sentinel"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Actualiza Valor Parametro Auditoria" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{20681623-5CAA-4B0C-897A-BF795F3BD7C7}"
+      DTS:From="Package\Actualizar campo bandera a P Auditoria"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Limpia tabla intermedia SDM_SSS_Trans_Empresa_Auditoria" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{2D3BE156-981F-4CA1-9D1B-16C72A9B26EC}"
+      DTS:From="Package\Actualizar campo bandera a C Auditoria"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\Inserta Intermedia hacia Trama Sentinel" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta sección CDATA contiene la información de diseño del paquete. Esta sección incluye información como, por ejemplo, las coordenadas (x,y), el ancho y el alto.-->
+<!--Si edita manualmente esta sección y comete un error, puede eliminarlo. -->
+<!--El paquete podrá cargarse normalmente, pero se perderá la información de diseño anterior y el diseñador reorganizará los elementos automáticamente en la superficie de diseño.-->
+<Objects
+  Version="8">
+  <!--Cada uno de los nodos siguientes contiene propiedades que no afectan al comportamiento en tiempo de ejecución.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="200,42"
+          Id="Package\Actualiza Valor Parametro Auditoria"
+          TopLeft="81.7777777777778,457.555555555556" />
+        <NodeLayout
+          Size="254,42"
+          Id="Package\Actualizar campo bandera a C Auditoria"
+          TopLeft="57.5555555555556,279" />
+        <NodeLayout
+          Size="206,42"
+          Id="Package\Actualizar campo bandera a P Auditoria"
+          TopLeft="64.6666666666667,16" />
+        <NodeLayout
+          Size="263,42"
+          Id="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD"
+          TopLeft="80.8333333333334,202.5" />
+        <NodeLayout
+          Size="269,42"
+          Id="Package\Inserta Intermedia hacia Trama Sentinel"
+          TopLeft="49.8888888888889,365.444444444445" />
+        <NodeLayout
+          Size="364,42"
+          Id="Package\Limpia tabla intermedia SDM_SSS_Trans_Empresa_Auditoria"
+          TopLeft="18.2777777777778,130.277777777777" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="212.333333333333,244.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-27.7777777777778,34.5"
+              Start="0,0"
+              End="-27.7777777777778,27">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.25"
+                    Point2="0,17.25"
+                    Point3="-4,17.25" />
+                  <mssgle:LineSegment
+                    End="-23.7777777777778,17.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-23.7777777777778,17.25"
+                    Point2="-27.7777777777778,17.25"
+                    Point3="-27.7777777777778,21.25" />
+                  <mssgle:LineSegment
+                    End="-27.7777777777778,27" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="200.277777777778,172.277777777777">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="12.0555555555556,30.222222222223"
+              Start="0,0"
+              End="12.0555555555556,22.722222222223">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,11.1111111111115" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,11.1111111111115"
+                    Point2="0,15.1111111111115"
+                    Point3="4,15.1111111111115" />
+                  <mssgle:LineSegment
+                    End="8.0555555555556,15.1111111111115" />
+                  <mssgle:CubicBezierSegment
+                    Point1="8.0555555555556,15.1111111111115"
+                    Point2="12.0555555555556,15.1111111111115"
+                    Point3="12.0555555555556,19.1111111111115" />
+                  <mssgle:LineSegment
+                    End="12.0555555555556,22.722222222223" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="183.083333333334,407.444444444445">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.111111111111"
+              Start="0,0"
+              End="0,42.611111111111">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.611111111111" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="167.666666666667,58">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="32.6111111111111,72.2777777777773"
+              Start="0,0"
+              End="32.6111111111111,64.7777777777773">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32.1388888888887" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,32.1388888888887"
+                    Point2="0,36.1388888888887"
+                    Point3="4,36.1388888888887" />
+                  <mssgle:LineSegment
+                    End="28.6111111111111,36.1388888888887" />
+                  <mssgle:CubicBezierSegment
+                    Point1="28.6111111111111,36.1388888888887"
+                    Point2="32.6111111111111,36.1388888888887"
+                    Point3="32.6111111111111,40.1388888888887" />
+                  <mssgle:LineSegment
+                    End="32.6111111111111,64.7777777777773" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="184.472222222222,321">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.4444444444443"
+              Start="0,0"
+              End="0,36.9444444444443">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.9444444444443" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <AnnotationLayout
+          Text="Actualiza el valor del parametro IdControlAud en SDM_Control_Trans_Empresa_Cash,&#xA;tomando el max(Secuencia_Auditoria) de la intermedia"
+          ParentId="Package"
+          FontInfo="{assembly:Null}"
+          Size="476,56"
+          Id="b651e154-58bd-4a19-b5a8-c035c1dec05d"
+          TopLeft="310.222222222223,448.666666666667" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="280,42"
+          Id="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA"
+          TopLeft="388,34" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\Data Conversion"
+          TopLeft="447,123" />
+        <NodeLayout
+          Size="171,42"
+          Id="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination"
+          TopLeft="455,214" />
+        <EdgeLayout
+          Id="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD.Paths[OLE DB Source Output]"
+          TopLeft="526.5,76">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,47"
+              Start="0,0"
+              End="0,39.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,39.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD.Paths[Data Conversion Output]"
+          TopLeft="525,165">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="15.5,49"
+              Start="0,0"
+              End="15.5,41.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.5"
+                    Point2="0,24.5"
+                    Point3="4,24.5" />
+                  <mssgle:LineSegment
+                    End="11.5,24.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="11.5,24.5"
+                    Point2="15.5,24.5"
+                    Point3="15.5,28.5" />
+                  <mssgle:LineSegment
+                    End="15.5,41.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\EXT_ORA_SSS_TRANS_EMPRESA_AUD\EXT_ORA_FUENTE_EMPRESA_AUDITORIA">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
